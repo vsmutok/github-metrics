@@ -142,8 +142,19 @@ router.get('/', async (req, res) => {
     let card3Title;
     let card3Stats;
 
-    const domainInsights = typeof activeTheme.domainConfig?.calculateInsights === 'function'
+    const rawDomainInsights = typeof activeTheme.domainConfig?.calculateInsights === 'function'
       ? activeTheme.domainConfig.calculateInsights(data.repos)
+      : null;
+
+    // Only use domain insights when they actually carry data, so non-domain
+    // users don't get a card full of zeros ("0% / 0 / Inactive").
+    const domainInsights = rawDomainInsights
+      && Array.isArray(rawDomainInsights.stats)
+      && rawDomainInsights.stats.some((stat) => {
+        const value = String(stat.value ?? '').trim().toLowerCase();
+        return value !== '' && !['0', '0%', '-', 'inactive', 'n/a'].includes(value);
+      })
+      ? rawDomainInsights
       : null;
 
     if (!codeforcesData && !codechefData) {

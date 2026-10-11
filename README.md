@@ -190,14 +190,24 @@ Competitive-programming handles are optional. The CP row is drawn only when at l
 
 The app is a small Express server that renders SVG on demand. It runs without a token: a public fallback fills contributions and streaks. A token improves accuracy (PRs, issues, reviews) and raises GitHub rate limits.
 
-**Any Node host works.**
+зр### Vercel — API + demo, auto-deploy
+
+1. Import the repo at [vercel.com/new](https://vercel.com/new). The included `vercel.json` serves the demo from `public/` and the API as a serverless function.
+2. In **Project → Settings → Environment Variables**, add `GITHUB_TOKEN` (create one [here](https://github.com/settings/tokens); no extra scopes needed for public data).
+3. Deploy. Every push to `main` re-deploys automatically.
+
+Your embed URL is then:
+
+```md
+![github-metrics](https://your-project.vercel.app/api/profile?username=YOUR_USERNAME)
+```
+
+### Other hosts
 
 | Target | How |
 | :--- | :--- |
-| Render | One-click blueprint in [`render.yaml`](render.yaml) |
-| Railway / Heroku | [`Procfile`](Procfile) (`web: node src/server.js`) |
 | Docker | `docker compose up -d` (see [`Dockerfile`](Dockerfile)) |
-| GitHub Pages | Interactive demo and static previews only, via `.github/workflows/deploy-pages.yml` |
+| GitHub Pages | Static demo + previews only, via `.github/workflows/deploy-pages.yml` |
 
 `npm start` builds the renderer bundle, then listens on `PORT` (default `3000`). Use `GET /health` as the liveness probe.
 

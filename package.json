@@ -23,7 +23,7 @@
     "test:coverage": "NODE_OPTIONS=--experimental-vm-modules jest --coverage",
     "test:visual": "NODE_OPTIONS=--experimental-vm-modules jest visual-workflow",
     "previews": "node scripts/generate-previews.js",
-    "build:pages": "node scripts/build-engine.js && node scripts/generate-previews.js",
+    "build:previews": "node scripts/build-engine.js && node scripts/generate-previews.js",
     "test:deployment": "node -e \"console.log('deployment checks run in CI')\"",
     "test:unit": "NODE_OPTIONS=--experimental-vm-modules jest"
   },
@@ -41,7 +41,7 @@
     "type": "git",
     "url": "git+https://github.com/vsmutok/github-metrics.git"
   },
-  "homepage": "https://vsmutok.github.io/github-metrics/",
+  "homepage": "https://ghmetric.vercel.app/",
   "bugs": {
     "url": "https://github.com/vsmutok/github-metrics/issues"
   },

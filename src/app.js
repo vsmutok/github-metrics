@@ -15,7 +15,7 @@ const __dirname = dirname(__filename);
 const app = express();
 app.set('trust proxy', 1);
 
-// serve the static studio (also used by the GitHub Pages deploy)
+// serve the static studio
 app.use(express.static(join(__dirname, '..', 'public')));
 
 validateConfig(config);

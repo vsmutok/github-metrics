@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="https://vsmutok.github.io/github-metrics/">
+  <a href="https://ghmetric.vercel.app/">
     <img src="./public/preview.png" alt="github-metrics profile card — activity, streak, languages and trophies" width="880">
   </a>
 </p>
@@ -10,14 +10,14 @@
 </p>
 
 <p align="center">
-  <a href="https://vsmutok.github.io/github-metrics/"><img src="https://img.shields.io/badge/demo-live-2ea44f?style=flat-square" alt="Live demo"></a>
+  <a href="https://ghmetric.vercel.app/"><img src="https://img.shields.io/badge/demo-live-2ea44f?style=flat-square" alt="Live demo"></a>
   <img src="https://img.shields.io/badge/node-%3E%3D20-339933?style=flat-square&logo=node.js&logoColor=white" alt="Node.js 20+">
   <img src="https://img.shields.io/badge/license-MIT-blue?style=flat-square" alt="MIT license">
   <img src="https://img.shields.io/badge/themes-32-6f42c1?style=flat-square" alt="32 themes">
 </p>
 
 <p align="center">
-  <a href="https://vsmutok.github.io/github-metrics/">Open the studio</a>
+  <a href="https://ghmetric.vercel.app/">Open the studio</a>
   ·
   <a href="#embed-it">Embed in 30 seconds</a>
   ·
@@ -79,7 +79,7 @@ The card is one SVG. Theme changes the palette. Style changes the charts and tro
   </tr>
 </table>
 
-Tune username, theme, style and sections in the [interactive demo](https://vsmutok.github.io/github-metrics/), then copy the snippet.
+Tune username, theme, style and sections in the [interactive demo](https://ghmetric.vercel.app/), then copy the snippet.
 
 ---
 
@@ -126,15 +126,15 @@ A tighter card — modern style, centered header, no trophies:
 
 Boolean flags accept `true` / `false`, `1` / `0` and `yes` / `no`. Unknown themes and styles fall back to the defaults instead of failing the request.
 
-### Static previews (no server)
+### Static previews
 
-If you only want a fixed preview, the repo also publishes pre-rendered SVGs to GitHub Pages:
+The repo also ships pre-rendered SVGs (served statically by Vercel), one per theme:
 
 ```md
-![github-metrics](https://vsmutok.github.io/github-metrics/previews/github-dark.svg)
+![github-metrics](https://ghmetric.vercel.app/previews/github-dark.svg)
 ```
 
-> GitHub Pages is static and cannot run `/api/profile`. Per-user live cards need the API hosted somewhere (any Node host works).
+These are fixed (demo data). For your own live card, use the `/api/profile` endpoint above.
 
 ---
 
@@ -204,12 +204,13 @@ Your embed URL is then:
 
 ### Other hosts
 
-| Target | How |
-| :--- | :--- |
-| Docker | `docker compose up -d` (see [`Dockerfile`](Dockerfile)) |
-| GitHub Pages | Static demo + previews only, via `.github/workflows/deploy-pages.yml` |
+Prefer to run it yourself? Docker works anywhere:
 
-`npm start` builds the renderer bundle, then listens on `PORT` (default `3000`). Use `GET /health` as the liveness probe.
+```bash
+docker compose up -d
+```
+
+See the [`Dockerfile`](Dockerfile). `npm start` builds the renderer bundle, then listens on `PORT` (default `3000`). Use `GET /health` as the liveness probe.
 
 ---
 
@@ -258,7 +259,7 @@ Copy [`.env.example`](.env.example). Every variable is optional.
 | `npm run test:visual` | Visual workflow tests |
 | `npm run check` | Lint / quality gate |
 | `npm run previews` | Rebuild static theme SVGs |
-| `npm run build:pages` | Bundle the engine and regenerate previews |
+| `npm run build:previews` | Bundle the engine and regenerate previews |
 
 ### API endpoints
 
@@ -281,7 +282,7 @@ src/
 ├── utils/        # Cache, validation, sanitizers, accessibility
 └── server.js     # Express entry point
 public/           # Interactive demo and README photos
-previews/         # Static theme SVGs for GitHub Pages
+previews/         # Static theme SVGs
 ```
 
 ---

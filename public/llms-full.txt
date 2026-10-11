@@ -92,7 +92,7 @@ icons together:
 ---
 
 ## Architecture & Hosting
-- **Backend Runtime**: Node.js ES Modules / Express or static hosting via GitHub Pages.
+- **Backend Runtime**: Node.js ES Modules / Express, deployed as a serverless function on Vercel.
 - **Rendering Engine**: Native SVG generation with embedded SVGs, a responsive layout engine, and zero external binary dependencies.
 - **Caching**: Multi-tiered in-memory LRU cache with deduplication to ensure rapid sub-second responses and respect upstream API rate limits.
 - **License**: MIT License © vsmutok.

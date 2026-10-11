@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Generate a live GitHub profile metrics card as a single SVG. Pick a username, theme and the sections you want, then copy the markdown.">
+  <meta name="theme-color" content="#0d1117">
+  <meta name="color-scheme" content="dark light">
+  <title>github-metrics — studio</title>
+  <link rel="icon" href="./logo.svg" type="image/svg+xml">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="github-metrics studio">
+  <meta property="og:description" content="Generate a live GitHub profile metrics card as a single SVG. Pick a username, theme and sections, then copy the markdown.">
+  <meta property="og:image" content="./logo.svg">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="github-metrics studio">
+  <meta name="twitter:image" content="./logo.svg">
+  <script>
+    try {
+      var stored = localStorage.getItem('gm-theme');
+      var light = stored ? stored === 'light' : window.matchMedia('(prefers-color-scheme: light)').matches;
+      if (light) document.documentElement.classList.add('light');
+    } catch (e) { /* ignore */ }
+  </script>
+  <link rel="stylesheet" href="./styles.css?v=17">
+</head>
+<body>
+  <header class="navbar">
+    <div class="container nav-container">
+      <a href="./" class="brand"><img class="brand-mark" src="./logo.svg" alt="github-metrics logo" width="26" height="26">github<span>-metrics</span></a>
+      <div class="nav-actions">
+        <a class="btn btn-sm" href="https://github.com/vsmutok/github-metrics" target="_blank" rel="noopener">Source</a>
+        <button class="btn btn-sm theme-toggle" id="themeToggle" type="button" aria-label="Toggle color theme" title="Toggle color theme">
+          <svg class="icon icon-moon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 7.46A9 9 0 1 1 12 3Z"/></svg>
+          <svg class="icon icon-sun" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container studio" id="studio">
+    <div class="studio-head">
+      <h1 class="studio-title">GitHub metrics card generator</h1>
+      <p class="studio-subtitle">Pick a username, a theme and the sections you want. The preview updates live and the markdown is generated for you.</p>
+    </div>
+
+    <div class="studio-layout">
+      <form class="panel" id="controls" onsubmit="return false;">
+        <div class="panel-title"><span>Configuration</span><button class="btn btn-sm" id="resetBtn" type="button">Reset</button></div>
+
+        <div class="field">
+          <label for="username">GitHub username</label>
+          <input class="input" id="username" type="text" value="vsmutok" autocomplete="off" spellcheck="false">
+          <div class="chips">
+            <button class="chip active" type="button" data-user="vsmutok">vsmutok</button>
+            <button class="chip" type="button" data-user="torvalds">torvalds</button>
+            <button class="chip" type="button" data-user="gaearon">gaearon</button>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="theme">Color theme</label>
+          <select class="select" id="theme">
+            <optgroup label="GitHub defaults">
+              <option value="github-dark" selected>GitHub Dark</option>
+              <option value="github-light">GitHub Light</option>
+              <option value="github-dimmed">GitHub Dark Dimmed</option>
+              <option value="hc-dark">GitHub Dark High Contrast</option>
+              <option value="hc-light">GitHub Light High Contrast</option>
+            </optgroup>
+            <optgroup label="Dark">
+              <option value="dark">Dark</option>
+              <option value="tokyonight">Tokyo Night</option>
+              <option value="dracula">Dracula</option>
+              <option value="catppuccin">Catppuccin</option>
+              <option value="nord">Nord</option>
+              <option value="rose-pine">Rose Pine</option>
+              <option value="synthwave84">Synthwave 84</option>
+              <option value="onedarkpro">One Dark Pro</option>
+              <option value="one-dark">One Dark</option>
+              <option value="midnight-sunset">Midnight Sunset</option>
+              <option value="monokai">Monokai</option>
+              <option value="gruvbox">Gruvbox</option>
+            </optgroup>
+            <optgroup label="Light and specialty">
+              <option value="light">Light</option>
+              <option value="aurora">Aurora</option>
+              <option value="oceanicnext">Oceanic Next</option>
+              <option value="forestnight">Forest Night</option>
+              <option value="emberglow">Ember Glow</option>
+              <option value="midnightneon">Midnight Neon</option>
+              <option value="pasteldream">Pastel Dream</option>
+              <option value="cobalt2">Cobalt 2</option>
+              <option value="solarized">Solarized</option>
+              <option value="material">Material</option>
+              <option value="androidstudio">Android Studio</option>
+              <option value="xcode">Xcode</option>
+              <option value="webdev">Web</option>
+              <option value="aiml">AI / ML</option>
+              <option value="gamedev">Game</option>
+            </optgroup>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="style">Card style</label>
+          <select class="select" id="style">
+            <option value="classic" selected>Classic</option>
+            <option value="modern">Modern</option>
+            <option value="grid">Grid</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label>Header alignment</label>
+          <div class="segmented">
+            <label><input type="radio" name="align" value="left" checked><span>Left</span></label>
+            <label><input type="radio" name="align" value="center"><span>Center</span></label>
+            <label><input type="radio" name="align" value="right"><span>Right</span></label>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Sections</label>
+          <div class="sections" id="sections">
+            <label class="switch"><input type="checkbox" data-section="header" checked><span class="switch-track"></span><span class="switch-label">Profile header</span></label>
+            <label class="switch"><input type="checkbox" data-section="activity" checked><span class="switch-track"></span><span class="switch-label">GitHub Activity</span></label>
+            <label class="switch"><input type="checkbox" data-section="streak" checked><span class="switch-track"></span><span class="switch-label">Streak Stats</span></label>
+            <label class="switch"><input type="checkbox" data-section="repos" checked><span class="switch-track"></span><span class="switch-label">Repository Stats</span></label>
+            <label class="switch"><input type="checkbox" data-section="contribution" checked><span class="switch-track"></span><span class="switch-label">Contribution Activity</span></label>
+            <label class="switch"><input type="checkbox" data-section="languages" checked><span class="switch-track"></span><span class="switch-label">Top Languages</span></label>
+            <label class="switch"><input type="checkbox" data-section="trophies" checked><span class="switch-track"></span><span class="switch-label">Achievement Trophies</span></label>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button class="btn btn-primary btn-block" id="downloadSvg" type="button">Download SVG</button>
+          <button class="btn btn-block" id="downloadPng" type="button">Download PNG</button>
+        </div>
+      </form>
+
+      <section class="panel preview-panel">
+        <div class="preview-toolbar">
+          <span class="status"><span class="dot"></span>Live preview</span>
+          <span class="toolbar-meta" id="previewMeta">vsmutok · github-dark</span>
+        </div>
+
+        <div class="preview-stage" id="previewStage" aria-live="polite"></div>
+
+        <div class="code-area">
+          <div class="tabs" role="tablist">
+            <button class="tab active" type="button" data-tab="markdown">Markdown</button>
+            <button class="tab" type="button" data-tab="html">HTML</button>
+            <button class="tab" type="button" data-tab="url">Direct link</button>
+          </div>
+          <div class="code-row">
+            <pre class="code-box"><code id="codeSnippet"></code></pre>
+            <button class="btn" id="copyBtn" type="button">Copy</button>
+          </div>
+          <p class="hint" id="codeHint"></p>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <span>© 2026 github-metrics · MIT licensed</span>
+      <a href="https://github.com/vsmutok/github-metrics" target="_blank" rel="noopener">github.com/vsmutok/github-metrics</a>
+    </div>
+  </footer>
+
+  <script type="module" src="./script.js?v=17"></script>
+</body>
+</html>

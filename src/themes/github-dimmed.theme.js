@@ -1,0 +1,33 @@
+const theme = {
+  flat: true,
+  name: 'github-dimmed',
+  colors: {
+    background: '#22272e',
+    backgroundAlt: '#1c2128',
+    cardBackground: '#2d333b',
+    cardBackgroundAlt: '#373e47',
+    border: '#444c56',
+    borderLight: '#373e47',
+    borderGlow: '#539bf533',
+    primaryText: '#cdd9e5',
+    secondaryText: '#adbac7',
+    mutedText: '#768390',
+    accent: '#539bf5',
+    accentSecondary: '#b083f0',
+    accentTertiary: '#57ab5a',
+    accentWarm: '#c69026',
+    accentHot: '#e5534b',
+    glow: '#539bf5',
+    glowSecondary: '#b083f0',
+    gradientStart: '#539bf5',
+    gradientMid: '#b083f0',
+    gradientEnd: '#57ab5a',
+    success: '#57ab5a',
+    warning: '#c69026',
+    error: '#e5534b',
+    danger: '#e5534b',
+  },
+  chartColors: ['#539bf5', '#b083f0', '#57ab5a', '#c69026', '#e5534b'],
+};
+
+export default theme;

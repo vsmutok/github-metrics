@@ -1,0 +1,31 @@
+name: Issue Labeler
+on:
+  issues:
+    types: [opened, edited]
+
+jobs:
+  label:
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+    steps:
+      - name: Label GSSoC Issues
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const issue = context.payload.issue;
+            const title = (issue.title || "").trim().toLowerCase();
+            const labels = ['gssoc26'];
+
+            if (title.startsWith('feat:') || title.startsWith('feat ')) {
+              labels.push('type:feature');
+            } else if (title.startsWith('fix:') || title.startsWith('fix ') || title.startsWith('bug:') || title.startsWith('bug ')) {
+              labels.push('type:bug');
+            }
+
+            await github.rest.issues.addLabels({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: issue.number,
+              labels: labels
+            });

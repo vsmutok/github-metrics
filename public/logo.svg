@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" role="img" aria-label="github-metrics logo">
+  <defs>
+    <linearGradient id="accent" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#58a6ff"/>
+      <stop offset="50%" stop-color="#bc8cff"/>
+      <stop offset="100%" stop-color="#3fb950"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="112" fill="#0d1117"/>
+  <rect x="24" y="24" width="464" height="464" rx="92" fill="none" stroke="#30363d" stroke-width="4"/>
+  <g fill="url(#accent)">
+    <rect x="128" y="292" width="44" height="92" rx="12"/>
+    <rect x="196" y="236" width="44" height="148" rx="12"/>
+    <rect x="264" y="180" width="44" height="204" rx="12"/>
+    <rect x="332" y="128" width="44" height="256" rx="12"/>
+  </g>
+  <path d="M150 260 L218 208 L286 224 L354 152" fill="none" stroke="#f0f6fc" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" opacity="0.9"/>
+</svg>

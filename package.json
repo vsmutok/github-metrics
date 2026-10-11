@@ -1,0 +1,64 @@
+{
+  "name": "github-metrics",
+  "version": "2.0.0",
+  "description": "Dynamic, high-performance GitHub profile README metrics generator",
+  "main": "src/server.js",
+  "type": "module",
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js",
+    "prestart": "node scripts/build-engine.js",
+    "predev": "node scripts/build-engine.js",
+    "build:engine": "node scripts/build-engine.js",
+    "lint": "node scripts/quality.js lint",
+    "format": "node scripts/quality.js format",
+    "format:check": "node scripts/quality.js format:check",
+    "check": "npm run lint",
+    "audit": "npm audit --omit=dev --audit-level=high",
+    "test": "NODE_OPTIONS=--experimental-vm-modules jest",
+    "test:watch": "NODE_OPTIONS=--experimental-vm-modules jest --watch",
+    "test:coverage": "NODE_OPTIONS=--experimental-vm-modules jest --coverage",
+    "test:visual": "NODE_OPTIONS=--experimental-vm-modules jest visual-workflow",
+    "previews": "node scripts/generate-previews.js",
+    "build:pages": "node scripts/build-engine.js && node scripts/generate-previews.js",
+    "test:deployment": "node -e \"console.log('deployment checks run in CI')\"",
+    "test:unit": "NODE_OPTIONS=--experimental-vm-modules jest"
+  },
+  "keywords": [
+    "github",
+    "readme",
+    "profile",
+    "svg",
+    "metrics",
+    "github-pages"
+  ],
+  "author": "vsmutok",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vsmutok/github-metrics.git"
+  },
+  "homepage": "https://vsmutok.github.io/github-metrics/",
+  "bugs": {
+    "url": "https://github.com/vsmutok/github-metrics/issues"
+  },
+  "dependencies": {
+    "dotenv": "^17.2.3",
+    "express": "^4.22.2",
+    "express-rate-limit": "^7.5.1",
+    "mongoose": "^9.1.6"
+  },
+  "devDependencies": {
+    "@testing-library/dom": "^9.3.4",
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^30.4.1",
+    "jsdom": "^22.1.0"
+  },
+  "overrides": {
+    "js-yaml": "^4.2.0",
+    "form-data": "^4.0.6"
+  }
+}

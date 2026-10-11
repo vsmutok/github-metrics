@@ -1,0 +1,33 @@
+const theme = {
+  flat: true,
+  name: 'github-dark',
+  colors: {
+    background: '#0d1117',
+    backgroundAlt: '#010409',
+    cardBackground: '#161b22',
+    cardBackgroundAlt: '#21262d',
+    border: '#30363d',
+    borderLight: '#21262d',
+    borderGlow: '#58a6ff33',
+    primaryText: '#f0f6fc',
+    secondaryText: '#c9d1d9',
+    mutedText: '#8b949e',
+    accent: '#58a6ff',
+    accentSecondary: '#bc8cff',
+    accentTertiary: '#3fb950',
+    accentWarm: '#d29922',
+    accentHot: '#f85149',
+    glow: '#58a6ff',
+    glowSecondary: '#bc8cff',
+    gradientStart: '#58a6ff',
+    gradientMid: '#bc8cff',
+    gradientEnd: '#3fb950',
+    success: '#3fb950',
+    warning: '#d29922',
+    error: '#f85149',
+    danger: '#f85149',
+  },
+  chartColors: ['#58a6ff', '#bc8cff', '#3fb950', '#d29922', '#f85149'],
+};
+
+export default theme;

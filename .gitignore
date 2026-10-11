@@ -1,0 +1,45 @@
+# Dependencies
+node_modules/
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Visual Previews
+/previews/
+
+# Generated browser engine (built by `npm run build:engine`)
+public/engine/
+
+# IDE / editor
+.idea/
+.vscode/
+.junie/
+*.swp
+*.swo
+
+# Test output
+test-logging.js
+/src/utils/view-logs.js
+DEPLOYMENT.md
+
+# Coverage reports
+coverage/
+
+# Vercel
+.vercel
+
+# Database backups
+api_logs_backup.json
+
+# Pycharm AI
+.junie

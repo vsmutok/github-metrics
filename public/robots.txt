@@ -1,0 +1,10 @@
+# robots.txt for github-metrics
+
+User-agent: *
+Allow: /
+Allow: /llms.txt
+Allow: /llms-full.txt
+Allow: /sitemap.xml
+
+# Protect internal cache stats endpoint from search engine indexing
+Disallow: /api/cache/

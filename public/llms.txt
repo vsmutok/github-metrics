@@ -1,0 +1,20 @@
+# github-metrics
+
+> github-metrics is a dynamic, high-performance GitHub profile README generator that renders real-time GitHub activity, contribution streaks, LeetCode, Codeforces, and CodeChef statistics, achievement trophies, top languages, and custom domain insights into a unified, responsive SVG card.
+
+## Documentation & Endpoints
+
+- [Full LLM Documentation](./llms-full.txt): Complete API query parameters, theme references, and markdown examples.
+- [Live Generator & Preview](./#studio): Interactive web studio to customize and preview profile cards.
+
+## Quick Usage
+
+Render a standard profile card in Markdown:
+```markdown
+![github-metrics](https://your-domain.com/api/profile?username=vsmutok)
+```
+
+The default theme is `github-dark`. Override it and add LeetCode stats:
+```markdown
+![github-metrics](https://your-domain.com/api/profile?username=vsmutok&theme=github-light&leetcode=YOUR_LEETCODE_USERNAME)
+```

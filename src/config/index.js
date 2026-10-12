@@ -22,6 +22,17 @@ function readBoolean(env, key) {
   return TRUE_VALUES.has(readString(env, key).toLowerCase());
 }
 
+function readList(env, key, fallback = []) {
+  const raw = readString(env, key);
+  if (!raw) {
+    return fallback;
+  }
+  return raw
+    .split(',')
+    .map((item) => item.trim())
+    .filter(Boolean);
+}
+
 function normalizePort(rawPort, errors) {
   if (!rawPort) {
     return DEFAULT_PORT;
@@ -59,6 +70,7 @@ export function loadConfig(env = process.env) {
   const mongoUri = readString(env, 'MONGODB_URI');
   const analyticsDisabled = readBoolean(env, 'ANALYTICS_DISABLED') || readBoolean(env, 'DISABLE_ANALYTICS');
   const analyticsEnabled = !analyticsDisabled && Boolean(mongoUri);
+  const defaultUsername = readString(env, 'DEFAULT_USERNAME') || 'vsmutok';
   const cacheMaxSize = normalizePositiveInteger(
     readString(env, 'CACHE_MAX_SIZE'),
     DEFAULT_CACHE_MAX_SIZE,
@@ -93,8 +105,13 @@ export function loadConfig(env = process.env) {
       defaultTtlMs: isProduction ? PRODUCTION_CACHE_TTL_MS : DEVELOPMENT_CACHE_TTL_MS,
       staleTtlMs: isProduction ? PRODUCTION_STALE_TTL_MS : DEVELOPMENT_STALE_TTL_MS,
     },
+    cron: {
+      secret: readString(env, 'CRON_SECRET') || null,
+      warmPages: readList(env, 'CRON_WARM_PAGES', [`https://github.com/${defaultUsername}`]),
+      warmHosts: readList(env, 'CRON_WARM_HOSTS', ['ghmetric.vercel.app']),
+    },
     defaults: {
-      username: readString(env, 'DEFAULT_USERNAME') || 'vsmutok',
+      username: defaultUsername,
     },
     diagnostics: {
       warnings,

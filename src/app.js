@@ -5,6 +5,7 @@ import { dirname, join } from 'path';
 import config, { logStartupDiagnostics, validateConfig } from './config/index.js';
 import profileRoute from './routes/profile.route.js';
 import themeComparisonRoute from './routes/theme-comparison.route.js';
+import cronRoute from './routes/cron.route.js';
 import { initializeAnalytics } from './services/analytics.service.js';
 import { githubCache } from './utils/cache.js';
 import { renderGracefulError } from './renderers/error.renderer.js';
@@ -80,5 +81,6 @@ const usernameLimiter = rateLimit({
 
 app.use('/api/profile', globalLimiter, usernameLimiter, profileRoute);
 app.use('/api/theme-preview', themeComparisonRoute);
+app.use('/api/cron', cronRoute);
 
 export default app;

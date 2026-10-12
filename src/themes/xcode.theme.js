@@ -61,12 +61,6 @@ const xcodeTheme = {
         <circle cx="${align === 'center' ? x + decWidth / 2 + 8 : (align === 'right' ? x - decWidth - 8 : x + decWidth + 8)}" cy="${decY + 1.25}" r="2" fill="${colors.accentSecondary || colors.accent}" opacity="0.85"/>
       `;
     },
-    trophyLabels: {
-      commits: 'iOS Builder',
-      prs: 'Swift Guru',
-      stars: 'Cocoa Master',
-      followers: 'Apple Dev',
-    },
     highlightedLanguages: ['swift', 'objective-c'],
     languagePrefix: '🍎',
     calculateInsights: (repos) => {

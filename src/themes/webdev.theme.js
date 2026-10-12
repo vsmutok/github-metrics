@@ -60,12 +60,6 @@ const webdevTheme = {
         <circle cx="${align === 'center' ? x + decWidth / 2 + 8 : (align === 'right' ? x - decWidth - 8 : x + decWidth + 8)}" cy="${decY + 1.25}" r="2" fill="${colors.accentSecondary || colors.accent}" opacity="0.85"/>
       `;
     },
-    trophyLabels: {
-      commits: 'DOM Builder',
-      prs: 'PR Deployer',
-      stars: 'JS Artisan',
-      followers: 'Net Citizen',
-    },
     highlightedLanguages: ['javascript', 'typescript', 'html', 'css', 'scss', 'sass', 'vue', 'svelte'],
     languagePrefix: '🌐',
     calculateInsights: (repos) => {

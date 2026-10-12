@@ -69,12 +69,6 @@ const androidstudioTheme = {
         <circle cx="${align === 'center' ? x + decWidth / 2 + 8 : (align === 'right' ? x - decWidth - 8 : x + decWidth + 8)}" cy="${decY + 1.25}" r="2" fill="${colors.accentSecondary || colors.accent}" opacity="0.85"/>
       `;
     },
-    trophyLabels: {
-      commits: 'Android Builder',
-      prs: 'Compose Wizard',
-      stars: 'Material Designer',
-      followers: 'Kotlin Expert',
-    },
     highlightedLanguages: ['kotlin', 'java', 'xml', 'gradle kotlin dsl', 'gradle'],
     languagePrefix: '🤖',
     calculateInsights: (repos) => {

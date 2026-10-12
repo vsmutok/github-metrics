@@ -67,12 +67,6 @@ const gamedevTheme = {
         <circle cx="${align === 'center' ? x + decWidth / 2 + 8 : (align === 'right' ? x - decWidth - 8 : x + decWidth + 8)}" cy="${decY + 1.25}" r="2" fill="${colors.accentSecondary || colors.accent}" opacity="0.85"/>
       `;
     },
-    trophyLabels: {
-      commits: 'Game Director',
-      prs: 'Engine Optimizer',
-      stars: 'Shader Artist',
-      followers: 'Level Designer',
-    },
     highlightedLanguages: ['c#', 'c++', 'gdscript', 'shaderlab'],
     languagePrefix: '🎮',
     calculateInsights: (repos) => {

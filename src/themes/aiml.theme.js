@@ -67,12 +67,6 @@ const aimlTheme = {
         <circle cx="${align === 'center' ? x + decWidth / 2 + 8 : (align === 'right' ? x - decWidth - 8 : x + decWidth + 8)}" cy="${decY + 1.25}" r="2" fill="${colors.accentSecondary || colors.accent}" opacity="0.85"/>
       `;
     },
-    trophyLabels: {
-      commits: 'Model Builder',
-      prs: 'Data Wrangler',
-      stars: 'Loss Optimizer',
-      followers: 'Neural Wizard',
-    },
     highlightedLanguages: ['python', 'r', 'julia', 'jupyter notebook'],
     languagePrefix: '🧠',
     calculateInsights: (repos) => {

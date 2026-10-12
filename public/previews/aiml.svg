@@ -276,9 +276,9 @@
     <rect x="433.59999999999997" y="355.54545454545456" width="10.7" height="65.45454545454545" rx="2.5" fill="#8b5cf6" opacity="0.75"/>
     <rect x="447.29999999999995" y="344.6363636363636" width="10.7" height="76.36363636363636" rx="2.5" fill="#ee4c2c" opacity="0.80"/>
     
-    <text x="50" y="440" font-family="'SF Pro Text', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="9" fill="#7c6da6">Sep 11</text>
-    <text x="254" y="440" font-family="'SF Pro Text', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="9" fill="#7c6da6" text-anchor="middle">Sep 25</text>
-    <text x="458" y="440" font-family="'SF Pro Text', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="9" fill="#7c6da6" text-anchor="end">Oct 10</text>
+    <text x="50" y="440" font-family="'SF Pro Text', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="9" fill="#7c6da6">Sep 13</text>
+    <text x="254" y="440" font-family="'SF Pro Text', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="9" fill="#7c6da6" text-anchor="middle">Sep 27</text>
+    <text x="458" y="440" font-family="'SF Pro Text', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="9" fill="#7c6da6" text-anchor="end">Oct 12</text>
   </g>
 
   <g
@@ -376,7 +376,7 @@
     <text x="120" y="527" font-family="'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="9.5" font-weight="800" fill="#0d0b18" text-anchor="middle">S</text>
 
     <!-- label -->
-    <text x="93" y="602" font-family="'SF Pro Text', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="10" font-weight="600" fill="#a78bfa" text-anchor="middle">Model Builder</text>
+    <text x="93" y="602" font-family="'SF Pro Text', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="10" font-weight="600" fill="#a78bfa" text-anchor="middle">Commits</text>
 
     <!-- value -->
     <text x="93" y="617" font-family="'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="800" fill="#e9e3ff" text-anchor="middle">9.3k</text>
@@ -404,7 +404,7 @@
     <text x="206" y="527" font-family="'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="9.5" font-weight="800" fill="#0d0b18" text-anchor="middle">B</text>
 
     <!-- label -->
-    <text x="179" y="602" font-family="'SF Pro Text', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="10" font-weight="600" fill="#a78bfa" text-anchor="middle">Data Wrangler</text>
+    <text x="179" y="602" font-family="'SF Pro Text', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="10" font-weight="600" fill="#a78bfa" text-anchor="middle">PRs</text>
 
     <!-- value -->
     <text x="179" y="617" font-family="'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="800" fill="#e9e3ff" text-anchor="middle">99</text>
@@ -516,7 +516,7 @@
     <text x="550" y="527" font-family="'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="9.5" font-weight="800" fill="#0d0b18" text-anchor="middle">B</text>
 
     <!-- label -->
-    <text x="523" y="602" font-family="'SF Pro Text', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="10" font-weight="600" fill="#a78bfa" text-anchor="middle">Loss Optimizer</text>
+    <text x="523" y="602" font-family="'SF Pro Text', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="10" font-weight="600" fill="#a78bfa" text-anchor="middle">Stars</text>
 
     <!-- value -->
     <text x="523" y="617" font-family="'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="800" fill="#e9e3ff" text-anchor="middle">164</text>
@@ -544,7 +544,7 @@
     <text x="636" y="527" font-family="'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="9.5" font-weight="800" fill="#0d0b18" text-anchor="middle">C</text>
 
     <!-- label -->
-    <text x="609" y="602" font-family="'SF Pro Text', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="10" font-weight="600" fill="#a78bfa" text-anchor="middle">Neural Wizard</text>
+    <text x="609" y="602" font-family="'SF Pro Text', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="10" font-weight="600" fill="#a78bfa" text-anchor="middle">Followers</text>
 
     <!-- value -->
     <text x="609" y="617" font-family="'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="800" fill="#e9e3ff" text-anchor="middle">33</text>

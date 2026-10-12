@@ -3,11 +3,13 @@ import config from '../config/index.js';
 
 const DEFAULT_CACHE_TTL = config.cache.defaultTtlMs;
 const DEFAULT_MAX_SIZE = config.cache.maxSize;
+const DEFAULT_STALE_TTL = config.cache.staleTtlMs;
 
 class Cache {
-  constructor(defaultTTL = DEFAULT_CACHE_TTL, maxSize = DEFAULT_MAX_SIZE) {
+  constructor(defaultTTL = DEFAULT_CACHE_TTL, maxSize = DEFAULT_MAX_SIZE, defaultStaleTtl = DEFAULT_STALE_TTL) {
     this.defaultTTL = defaultTTL;
     this.maxSize = maxSize;
+    this.defaultStaleTtl = defaultStaleTtl;
     this.store = new Map();
     this.stats = { hits: 0, misses: 0, evictions: 0 };
   }
@@ -38,9 +40,37 @@ class Cache {
   }
 
   /**
-   * Set a value in cache with optional TTL
+   * Stale-aware read used by stale-while-revalidate.
+   * Returns { value, fresh } (fresh=false means past its TTL but still within
+   * the stale window) or null once it is past the stale window.
    */
-  set(key, value, ttl = this.defaultTTL) {
+  getWithMeta(key) {
+    const entry = this.store.get(key);
+
+    if (!entry) {
+      this.stats.misses++;
+      return null;
+    }
+
+    const now = Date.now();
+    if (now > entry.staleUntil) {
+      this.store.delete(key);
+      this.stats.misses++;
+      return null;
+    }
+
+    // Move to end (most recently used)
+    this.store.delete(key);
+    this.store.set(key, entry);
+    this.stats.hits++;
+    return { value: entry.value, fresh: now <= entry.expiresAt };
+  }
+
+  /**
+   * Set a value in cache with optional TTL. Expired values are kept for an
+   * extra `staleTtl` so they can be served immediately while revalidated.
+   */
+  set(key, value, ttl = this.defaultTTL, staleTtl = this.defaultStaleTtl) {
     if (this.store.has(key)) {
       this.store.delete(key);
     } else if (this.store.size >= this.maxSize) {
@@ -51,8 +81,12 @@ class Cache {
       }
     }
 
-    const expiresAt = Date.now() + ttl;
-    this.store.set(key, { value, expiresAt });
+    const now = Date.now();
+    this.store.set(key, {
+      value,
+      expiresAt: now + ttl,
+      staleUntil: now + ttl + staleTtl,
+    });
   }
 
   /**

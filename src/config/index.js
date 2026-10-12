@@ -7,6 +7,10 @@ const DEFAULT_PORT = 3000;
 const DEFAULT_CACHE_MAX_SIZE = 1000;
 const PRODUCTION_CACHE_TTL_MS = 1800000;
 const DEVELOPMENT_CACHE_TTL_MS = 300000;
+// Extra window where an expired entry is still served (stale-while-revalidate)
+// while a fresh copy is fetched in the background.
+const PRODUCTION_STALE_TTL_MS = 86400000;
+const DEVELOPMENT_STALE_TTL_MS = 3600000;
 const KNOWN_NODE_ENVS = new Set(['development', 'production', 'test']);
 
 function readString(env, key) {
@@ -87,6 +91,7 @@ export function loadConfig(env = process.env) {
     cache: {
       maxSize: cacheMaxSize,
       defaultTtlMs: isProduction ? PRODUCTION_CACHE_TTL_MS : DEVELOPMENT_CACHE_TTL_MS,
+      staleTtlMs: isProduction ? PRODUCTION_STALE_TTL_MS : DEVELOPMENT_STALE_TTL_MS,
     },
     defaults: {
       username: readString(env, 'DEFAULT_USERNAME') || 'vsmutok',

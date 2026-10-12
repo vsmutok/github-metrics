@@ -1,6 +1,6 @@
 // GitHub GraphQL API Service - Contribution Calendar & Streaks
 
-import { githubCache } from "../utils/cache.js";
+import { withSwr } from "../utils/swr.js";
 import { loadConfig } from "../config/index.js";
 import { HttpErrorCode, httpRequest } from "../utils/http-client.js";
 
@@ -394,24 +394,14 @@ async function fetchPublicContributionData(username) {
   };
 }
 
-/* fetch and normalize contribution data for a user */
-export async function getContributionData(username, createdAt = null) {
-  const cacheKey = `contributions:${username}`;
-
-  // check cache first
-  const cached = githubCache.get(cacheKey);
-  if (cached) {
-    return cached;
-  }
-
+/* fetch and normalize contribution data for a user (no caching) */
+async function computeContributionData(username, createdAt = null) {
   // Without a GitHub token, fall back to public data sources so the card still
   // renders real contributions instead of empty placeholders.
   if (!loadConfig().github.enabled) {
     try {
-      const resultData = await fetchPublicContributionData(username);
-      const result = { success: true, data: resultData };
-      githubCache.set(cacheKey, result);
-      return result;
+      const data = await fetchPublicContributionData(username);
+      return { success: true, data };
     } catch (error) {
       return {
         success: false,
@@ -444,19 +434,20 @@ export async function getContributionData(username, createdAt = null) {
       resultData = normalizeContributionData(userData);
     }
 
-    const result = {
-      success: true,
-      data: resultData,
-    };
-
-    // store in cache
-    githubCache.set(cacheKey, result);
-
-    return result;
+    return { success: true, data: resultData };
   } catch (error) {
     return {
       success: false,
       error: error.message || "Failed to fetch contribution data",
     };
   }
+}
+
+/* fetch and normalize contribution data for a user (stale-while-revalidate) */
+export async function getContributionData(username, createdAt = null) {
+  return withSwr(
+    `contributions:${username}`,
+    () => computeContributionData(username, createdAt),
+    (result) => result?.success === true
+  );
 }

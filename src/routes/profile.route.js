@@ -303,7 +303,7 @@ router.get('/', async (req, res) => {
     const svg = wrapSvg(content, width, height, accessibility);
 
     res.setHeader('Content-Type', 'image/svg+xml');
-    res.setHeader('Cache-Control', 'public, max-age=1800');
+    res.setHeader('Cache-Control', 'public, max-age=1800, stale-while-revalidate=86400, stale-if-error=86400');
     res.send(svg);
   } catch (error) {
     console.error('Profile render failed:', error.message);

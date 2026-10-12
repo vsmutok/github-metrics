@@ -1,6 +1,6 @@
 // GitHub REST API Service
 
-import { githubCache } from '../utils/cache.js';
+import { withSwr } from '../utils/swr.js';
 import { loadConfig } from '../config/index.js';
 import { HttpErrorCode, httpRequest } from '../utils/http-client.js';
 
@@ -208,27 +208,18 @@ function normalizeUserData(profile, repos, avatarDataUri) {
   };
 }
 
-/* fetch and normalize all gitHub data for a user */
-export async function getGitHubUserData(username) {
-  const cached = githubCache.get(username);
-  if (cached) {
-    return cached;
-  }
-
+/* fetch and normalize all GitHub data for a user (no caching) */
+async function fetchGitHubUserData(username) {
   try {
     const profilePromise = fetchUserProfile(username);
     const reposPromise = fetchUserRepos(username);
     const [profile, repos] = await Promise.all([profilePromise, reposPromise]);
     const avatarDataUri = await fetchAvatarDataUri(profile.avatar_url);
 
-    const result = {
+    return {
       success: true,
       data: normalizeUserData(profile, repos, avatarDataUri),
     };
-
-    githubCache.set(username, result);
-
-    return result;
   } catch (error) {
     if (error instanceof GitHubRequestError) {
       return {
@@ -245,4 +236,9 @@ export async function getGitHubUserData(username) {
       code: GitHubErrorCode.NETWORK,
     };
   }
+}
+
+/* fetch and normalize all GitHub data for a user (stale-while-revalidate) */
+export async function getGitHubUserData(username) {
+  return withSwr(username, () => fetchGitHubUserData(username), (result) => result?.success === true);
 }

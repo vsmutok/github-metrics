@@ -162,6 +162,23 @@ async function fetchSearchCounts(username) {
   }
 }
 
+async function fetchImageDataUri(url) {
+  if (!url) return null;
+  try {
+    const res = await fetch(`${url}${url.includes('?') ? '&' : '?'}s=96`);
+    if (!res.ok) return null;
+    const blob = await res.blob();
+    return await new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.onloadend = () => resolve(typeof reader.result === 'string' ? reader.result : null);
+      reader.onerror = () => resolve(null);
+      reader.readAsDataURL(blob);
+    });
+  } catch (error) {
+    return null;
+  }
+}
+
 async function fetchLiveProfile(username) {
   const headers = { Accept: 'application/vnd.github+json' };
   const [userRes, reposRes, contribution, searchCounts] = await Promise.all([
@@ -172,6 +189,7 @@ async function fetchLiveProfile(username) {
   ]);
   if (!userRes.ok) throw new Error('user not found');
   const user = await userRes.json();
+  const avatarDataUri = await fetchImageDataUri(user.avatar_url);
   const repos = reposRes.ok ? await reposRes.json() : [];
   const stars = Array.isArray(repos)
     ? repos.reduce((sum, repo) => sum + (repo.stargazers_count || 0), 0)
@@ -184,7 +202,7 @@ async function fetchLiveProfile(username) {
     username,
     name: user.name || username,
     subtitle: user.bio ? (user.bio.length > 60 ? user.bio.slice(0, 60) + '...' : user.bio) : `@${username}`,
-    avatarUrl: user.avatar_url,
+    avatarUrl: avatarDataUri || user.avatar_url,
     activity: { contributions: contribution.total, prs: searchCounts.prs, issues: searchCounts.issues },
     streak: {
       current: contribution.current,
@@ -465,24 +483,43 @@ function download(filename, href) {
   document.body.removeChild(link);
 }
 
-function serializeSvg() {
-  const svg = els.stage.querySelector('svg');
-  if (!svg) return '';
-  return '<?xml version="1.0" encoding="UTF-8"?>\n' + new XMLSerializer().serializeToString(svg);
+async function inlineExternalImages(svg) {
+  const images = Array.from(svg.querySelectorAll('image'));
+  await Promise.all(images.map(async (node) => {
+    const href = node.getAttribute('href') || node.getAttribute('xlink:href') || '';
+    if (!/^https?:\/\//i.test(href)) return;
+    const dataUri = await fetchImageDataUri(href);
+    if (!dataUri) return;
+    node.setAttribute('href', dataUri);
+    node.setAttribute('xlink:href', dataUri);
+  }));
 }
 
-els.downloadSvg.addEventListener('click', () => {
-  const svg = serializeSvg();
+async function serializeSvg() {
+  const svg = els.stage.querySelector('svg');
+  if (!svg) return '';
+  // Export a self-contained SVG: a standalone SVG loaded via <img> cannot fetch
+  // external resources, so images (e.g. the avatar) must be inlined as data URIs.
+  const clone = svg.cloneNode(true);
+  await inlineExternalImages(clone);
+  return '<?xml version="1.0" encoding="UTF-8"?>\n' + new XMLSerializer().serializeToString(clone);
+}
+
+els.downloadSvg.addEventListener('click', async () => {
+  const svg = await serializeSvg();
   if (!svg) return;
   const url = URL.createObjectURL(new Blob([svg], { type: 'image/svg+xml;charset=utf-8' }));
   download(`${state.username}-metrics-${state.theme}.svg`, url);
   setTimeout(() => URL.revokeObjectURL(url), 2000);
 });
 
-els.downloadPng.addEventListener('click', () => {
-  const svg = serializeSvg();
-  if (!svg) return;
+els.downloadPng.addEventListener('click', async () => {
   els.downloadPng.disabled = true;
+  const svg = await serializeSvg();
+  if (!svg) {
+    els.downloadPng.disabled = false;
+    return;
+  }
   const url = URL.createObjectURL(new Blob([svg], { type: 'image/svg+xml;charset=utf-8' }));
   const img = new Image();
   img.onload = () => {

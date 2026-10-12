@@ -29,6 +29,11 @@ const SECTION_HIDE_PARAM = {
 const els = {
   username: document.getElementById('username'),
   theme: document.getElementById('theme'),
+  themeLight: document.getElementById('themeLight'),
+  lightField: document.getElementById('lightThemeField'),
+  themeLabel: document.getElementById('themeLabel'),
+  themeModes: document.querySelectorAll('input[name="thememode"]'),
+  themeModeHint: document.getElementById('themeModeHint'),
   style: document.getElementById('style'),
   sections: document.getElementById('sections'),
   stage: document.getElementById('previewStage'),
@@ -47,6 +52,8 @@ const els = {
 const state = {
   username: DEFAULT_USERNAME,
   theme: DEFAULT_THEME,
+  lightTheme: 'github-light',
+  themeMode: 'fixed',
   style: 'classic',
   align: 'left',
   sections: { ...DEFAULT_SECTIONS },
@@ -215,7 +222,10 @@ function activeProfile() {
 }
 
 function renderPreview() {
-  setTheme(state.theme);
+  const effectiveTheme = state.themeMode === 'auto'
+    ? (siteIsLight() ? state.lightTheme : state.theme)
+    : state.theme;
+  setTheme(effectiveTheme);
   const model = buildDemoModel(activeProfile(), {
     align: state.align,
     sections: state.sections,
@@ -224,17 +234,20 @@ function renderPreview() {
   model.style = state.style;
   const svg = renderDashboardSvg(model);
   els.stage.innerHTML = svg;
-  els.meta.textContent = `${state.username} · ${state.theme}`;
+  els.meta.textContent = state.themeMode === 'auto'
+    ? `${state.username} · auto (${state.theme} / ${state.lightTheme})`
+    : `${state.username} · ${state.theme}`;
 }
 
 function baseUrl() {
   return window.location.origin + window.location.pathname.replace(/\/[^/]*$/, '');
 }
 
-function buildQuery() {
+function buildQuery(themeOverride) {
+  const theme = themeOverride || state.theme;
   const params = new URLSearchParams();
   params.set('username', state.username);
-  if (state.theme !== DEFAULT_THEME) params.set('theme', state.theme);
+  if (theme !== DEFAULT_THEME) params.set('theme', theme);
   if (state.style !== 'classic') params.set('style', state.style);
   if (state.align !== 'left') params.set('align', state.align);
   DASHBOARD_SECTIONS.forEach((key) => {
@@ -246,31 +259,50 @@ function buildQuery() {
 function buildEmbed() {
   const siteBase = baseUrl();
   const isGithubPages = window.location.hostname.endsWith('github.io');
+
+  // Auto: one snippet, two URLs. GitHub renders the <picture> and the browser
+  // picks the dark or light source from the viewer's color-scheme.
+  if (state.themeMode === 'auto') {
+    const darkUrl = `${siteBase}/api/profile?${buildQuery(state.theme)}`;
+    const lightUrl = `${siteBase}/api/profile?${buildQuery(state.lightTheme)}`;
+    const picture = [
+      '<picture>',
+      `  <source media="(prefers-color-scheme: dark)" srcset="${darkUrl}">`,
+      `  <source media="(prefers-color-scheme: light)" srcset="${lightUrl}">`,
+      `  <img alt="GitHub profile metrics" src="${lightUrl}" width="960">`,
+      '</picture>',
+    ].join('\n');
+    return { mode: 'auto', picture, darkUrl, lightUrl };
+  }
+
   const allSectionsOn = DASHBOARD_SECTIONS.every((key) => state.sections[key]);
   const useStatic = isGithubPages && allSectionsOn && state.align === 'left';
-
   const url = useStatic
     ? `${siteBase}/previews/${state.theme}.svg`
     : `${siteBase}/api/profile?${buildQuery()}`;
 
-  return { url, useStatic, isGithubPages };
+  return { mode: 'fixed', url, useStatic, isGithubPages };
 }
 
 function renderSnippet() {
-  const { url, useStatic, isGithubPages } = buildEmbed();
+  const embed = buildEmbed();
   let text;
-  if (state.tab === 'markdown') {
-    text = `![github-metrics](${url})`;
+  if (embed.mode === 'auto') {
+    text = state.tab === 'url' ? embed.darkUrl : embed.picture;
+  } else if (state.tab === 'markdown') {
+    text = `![github-metrics](${embed.url})`;
   } else if (state.tab === 'html') {
-    text = `<img src="${url}" alt="GitHub profile metrics" width="960" />`;
+    text = `<img src="${embed.url}" alt="GitHub profile metrics" width="960" />`;
   } else {
-    text = url;
+    text = embed.url;
   }
   els.snippet.textContent = text;
 
-  if (useStatic) {
+  if (embed.mode === 'auto') {
+    els.hint.textContent = "Auto: GitHub picks the dark or light URL from the <picture> block based on the viewer's theme.";
+  } else if (embed.useStatic) {
     els.hint.textContent = 'Static GitHub Pages preview (shows all sections).';
-  } else if (isGithubPages) {
+  } else if (embed.isGithubPages) {
     els.hint.textContent = 'GitHub Pages cannot run the API — host it (see README) so live, per-user cards work.';
   } else {
     els.hint.textContent = 'Served by this self-hosted instance.';
@@ -315,6 +347,44 @@ els.style.addEventListener('change', () => {
   renderAll();
 });
 
+/* ---------- Auto (dark/light) theme ---------- */
+function applyThemeMode() {
+  const auto = state.themeMode === 'auto';
+  if (els.lightField) els.lightField.hidden = !auto;
+  if (els.themeLabel) els.themeLabel.textContent = auto ? 'Dark theme' : 'Color theme';
+  if (els.themeModeHint) els.themeModeHint.hidden = !auto;
+}
+
+if (els.themeLight && els.theme) {
+  els.themeLight.innerHTML = els.theme.innerHTML;
+  els.themeLight.value = state.lightTheme;
+}
+
+els.themeModes.forEach((radio) => {
+  radio.addEventListener('change', () => {
+    state.themeMode = radio.value;
+    applyThemeMode();
+    renderAll();
+  });
+});
+
+if (els.themeLight) {
+  els.themeLight.addEventListener('change', () => {
+    state.lightTheme = els.themeLight.value;
+    renderAll();
+  });
+}
+
+applyThemeMode();
+
+// Re-render the preview when the OS colour scheme changes (Auto mode).
+try {
+  const colorScheme = window.matchMedia('(prefers-color-scheme: light)');
+  const onSchemeChange = () => { if (state.themeMode === 'auto') renderPreview(); };
+  if (colorScheme.addEventListener) colorScheme.addEventListener('change', onSchemeChange);
+  else if (colorScheme.addListener) colorScheme.addListener(onSchemeChange);
+} catch (error) { /* ignore */ }
+
 document.querySelectorAll('input[name="align"]').forEach((radio) => {
   radio.addEventListener('change', () => {
     state.align = currentAlign();
@@ -349,8 +419,12 @@ els.chips.forEach((chip) => {
 els.copy.addEventListener('click', async () => {
   try {
     await navigator.clipboard.writeText(els.snippet.textContent.trim());
-    els.copy.textContent = 'Copied';
-    setTimeout(() => { els.copy.textContent = 'Copy'; }, 1500);
+    els.copy.classList.add('copied');
+    els.copy.setAttribute('title', 'Copied!');
+    setTimeout(() => {
+      els.copy.classList.remove('copied');
+      els.copy.setAttribute('title', 'Copy to clipboard');
+    }, 1500);
   } catch (error) {
     console.error('Copy failed:', error);
   }
@@ -364,9 +438,15 @@ els.reset.addEventListener('click', () => {
   liveProfile = null;
   state.theme = cardThemeForSite(siteIsLight());
   state.style = 'classic';
+  state.themeMode = 'fixed';
+  state.lightTheme = 'github-light';
   els.username.value = DEFAULT_USERNAME;
   els.theme.value = state.theme;
   if (els.style) els.style.value = 'classic';
+  if (els.themeLight) els.themeLight.value = 'github-light';
+  const fixedMode = document.querySelector('input[name="thememode"][value="fixed"]');
+  if (fixedMode) fixedMode.checked = true;
+  applyThemeMode();
   const left = document.querySelector('input[name="align"][value="left"]');
   if (left) left.checked = true;
   els.sections.querySelectorAll('input[data-section]').forEach((input) => {

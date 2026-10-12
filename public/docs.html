@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="What each github-metrics card and achievement counts, and how it is calculated.">
+  <meta name="theme-color" content="#0d1117">
+  <meta name="color-scheme" content="dark light">
+  <title>Metrics reference — github-metrics</title>
+  <link rel="icon" href="./logo.svg" type="image/svg+xml">
+  <script>
+    try {
+      var stored = localStorage.getItem('gm-theme');
+      var light = stored ? stored === 'light' : window.matchMedia('(prefers-color-scheme: light)').matches;
+      if (light) document.documentElement.classList.add('light');
+    } catch (e) { /* ignore */ }
+  </script>
+  <link rel="stylesheet" href="./styles.css?v=1">
+</head>
+<body>
+  <header class="navbar">
+    <div class="container nav-container">
+      <a href="./" class="brand"><img class="brand-mark" src="./logo.svg" alt="github-metrics logo" width="26" height="26">github<span>-metrics</span></a>
+      <div class="nav-actions">
+        <a class="btn btn-sm" href="./">Demo</a>
+        <a class="btn btn-sm" href="https://github.com/vsmutok/github-metrics" target="_blank" rel="noopener">Source</a>
+        <button class="btn btn-sm theme-toggle" id="themeToggle" type="button" aria-label="Toggle color theme" title="Toggle color theme">
+          <svg class="icon icon-moon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 7.46A9 9 0 1 1 12 3Z"/></svg>
+          <svg class="icon icon-sun" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container doc">
+    <div class="doc-head">
+      <h1>Metrics reference</h1>
+      <p class="lede">Every number on the card, what it means and where it comes from. All GitHub data is public; a token only raises rate limits and adds all-time accuracy.</p>
+      <nav class="toc">
+        <a href="#how">How data is collected</a>
+        <a href="#cards">Cards</a>
+        <a href="#trophies">Achievements</a>
+        <a href="#tiers">Trophy tiers</a>
+        <a href="#cp">Competitive programming</a>
+        <a href="#styles">Styles</a>
+      </nav>
+    </div>
+
+    <section id="how">
+      <h2>How data is collected</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Source</th><th>Used for</th></tr></thead>
+          <tbody>
+            <tr><td>GitHub REST</td><td>Name, avatar, public repositories, total stars, followers.</td></tr>
+            <tr><td>GitHub GraphQL <small>(needs token)</small></td><td>All-time contributions, streaks, reviews, repositories contributed to, forks, discussions.</td></tr>
+            <tr><td>Public fallback <small>(no token)</small></td><td>Contributions from a public calendar API; PRs/issues from the GitHub search API.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>Contributions, streaks and trophies are aggregated across <strong>all years</strong>, not just the last one.</p>
+      <div class="note">
+        <strong>Freshness:</strong> responses are cached for <code>30 minutes</code> (production) / <code>5 minutes</code> (development), and GitHub's image proxy caches the rendered card too — so a card is at most ~30 minutes stale.
+      </div>
+    </section>
+
+    <section id="cards">
+      <h2>Cards</h2>
+
+      <h3>GitHub Activity</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Metric</th><th>What it counts</th></tr></thead>
+          <tbody>
+            <tr><td>Contributions</td><td>Total contributions (commits, PRs, issues, reviews) over your whole history.</td></tr>
+            <tr><td>PRs Opened</td><td>Pull requests you opened.</td></tr>
+            <tr><td>Issues Opened</td><td>Issues you opened.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="hint">These come from GitHub's contribution graph, so they reflect repos GitHub counts as your contributions.</p>
+
+      <h3>Streak Stats</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Metric</th><th>What it counts</th></tr></thead>
+          <tbody>
+            <tr><td>Current</td><td>Consecutive days with at least one contribution, ending today (or yesterday if today is empty).</td></tr>
+            <tr><td>Longest</td><td>Longest run of consecutive contribution days in your history.</td></tr>
+            <tr><td>Total</td><td>Number of days with at least one contribution (active days).</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Repository Stats</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Metric</th><th>What it counts</th></tr></thead>
+          <tbody>
+            <tr><td>Repositories</td><td>Your public repositories.</td></tr>
+            <tr><td>Stars</td><td>Total stars summed across your public repositories.</td></tr>
+            <tr><td>Followers</td><td>Your followers.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="hint">When a valid LeetCode profile is shown, this card is replaced by LeetCode stats.</p>
+
+      <h3>Contribution Activity</h3>
+      <p>Daily contributions for the <strong>last 30 days</strong>. Rendered as bars (Classic), a smoothed area line (Modern) or a heat strip (Grid) depending on the <a href="#styles">card style</a>.</p>
+
+      <h3>Top Languages</h3>
+      <p>The <strong>primary language of each public repository</strong>, counted per repo and topped to 5. The percentage is the share of counted repos — it is <em>not</em> a code-volume breakdown (unlike GitHub's own language bar).</p>
+    </section>
+
+    <section id="trophies">
+      <h2>Achievement trophies</h2>
+      <p>Ten badges. Each gets a letter tier (see <a href="#tiers">below</a>) based on its value.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Badge</th><th>Metric</th><th>What it counts</th></tr></thead>
+          <tbody>
+            <tr><td>Commits</td><td>Total contributions</td><td>All contributions over your whole history.</td></tr>
+            <tr><td>PRs</td><td>Pull requests</td><td>Pull requests you opened.</td></tr>
+            <tr><td>Reviews</td><td>Pull-request reviews</td><td>Reviews you submitted on pull requests.</td></tr>
+            <tr><td>Issues</td><td>Issues</td><td>Issues you opened.</td></tr>
+            <tr><td>Repos</td><td>Repositories</td><td>Your public repositories.</td></tr>
+            <tr><td>Stars</td><td>Stars</td><td>Total stars across your public repositories.</td></tr>
+            <tr><td>Followers</td><td>Followers</td><td>Your followers.</td></tr>
+            <tr><td>Impact</td><td>Open-source impact</td><td>Number of repositories you contributed to.</td></tr>
+            <tr><td>Forked</td><td>Repositories forked</td><td>Repositories you forked.</td></tr>
+            <tr><td>Discussions</td><td>Discussions</td><td>Discussions you started.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="hint">Reviews, Impact, Forked and Discussions need a GitHub token; without one they show <code>0</code>.</p>
+    </section>
+
+    <section id="tiers">
+      <h2>Trophy tiers</h2>
+      <p><span class="tier tier-s">S</span> Legendary · <span class="tier tier-a">A</span> Epic · <span class="tier tier-b">B</span> Rare · <span class="tier tier-c">C</span> Uncommon · <span class="tier tier-d">D</span> Common. A badge reaches a tier when its value is at least the threshold.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Badge</th><th><span class="tier tier-s">S</span></th><th><span class="tier tier-a">A</span></th><th><span class="tier tier-b">B</span></th><th><span class="tier tier-c">C</span></th></tr></thead>
+          <tbody>
+            <tr><td>Commits</td><td>5,000</td><td>2,000</td><td>500</td><td>100</td></tr>
+            <tr><td>PRs</td><td>500</td><td>200</td><td>50</td><td>10</td></tr>
+            <tr><td>Reviews</td><td>200</td><td>100</td><td>50</td><td>10</td></tr>
+            <tr><td>Issues</td><td>300</td><td>100</td><td>30</td><td>10</td></tr>
+            <tr><td>Repos</td><td>100</td><td>50</td><td>20</td><td>5</td></tr>
+            <tr><td>Stars</td><td>1,000</td><td>500</td><td>100</td><td>20</td></tr>
+            <tr><td>Followers</td><td>1,000</td><td>500</td><td>100</td><td>20</td></tr>
+            <tr><td>Impact</td><td>100</td><td>50</td><td>20</td><td>5</td></tr>
+            <tr><td>Forked</td><td>100</td><td>50</td><td>20</td><td>5</td></tr>
+            <tr><td>Discussions</td><td>500</td><td>200</td><td>50</td><td>10</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="cp">
+      <h2>Competitive programming</h2>
+      <p>Optional. The row appears only when at least <strong>two</strong> platforms return data — a single handle is ignored rather than leaving a half-empty row.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Platform</th><th>Shows</th></tr></thead>
+          <tbody>
+            <tr><td>LeetCode</td><td>Solved total, Easy/Medium/Hard breakdown, contest rating (or global rank).</td></tr>
+            <tr><td>Codeforces</td><td>Rating, rank, max rating.</td></tr>
+            <tr><td>CodeChef</td><td>Rating, stars, division.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="hint">Add with <code>?leetcode=</code>, <code>?codeforces=</code>, <code>?codechef=</code>.</p>
+    </section>
+
+    <section id="styles">
+      <h2>Card styles</h2>
+      <p>The <code>style</code> parameter restyles the contribution chart, the languages chart and the achievement badges together.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Style</th><th>Contribution</th><th>Languages</th><th>Achievements</th></tr></thead>
+          <tbody>
+            <tr><td><code>classic</code> <small>(default)</small></td><td>Vertical bars</td><td>Progress bars</td><td>Circular medallions</td></tr>
+            <tr><td><code>modern</code></td><td>Smooth area line</td><td>Donut + legend</td><td>Hexagons</td></tr>
+            <tr><td><code>grid</code></td><td>Heat strip</td><td>Stacked bar + legend</td><td>Rounded tiles</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>See the <a href="./">interactive demo</a> to try themes, styles and hidden sections, and the <a href="https://github.com/vsmutok/github-metrics#query-parameters" target="_blank" rel="noopener">README</a> for the full parameter list.</p>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <span>© 2026 github-metrics · MIT licensed</span>
+      <a href="https://github.com/vsmutok/github-metrics" target="_blank" rel="noopener">github.com/vsmutok/github-metrics</a>
+    </div>
+  </footer>
+
+  <script>
+    (function () {
+      var toggle = document.getElementById('themeToggle');
+      if (!toggle) return;
+      toggle.addEventListener('click', function () {
+        var isLight = document.documentElement.classList.toggle('light');
+        try { localStorage.setItem('gm-theme', isLight ? 'light' : 'dark'); } catch (e) { /* ignore */ }
+      });
+    })();
+  </script>
+</body>
+</html>

@@ -22,13 +22,14 @@
       if (light) document.documentElement.classList.add('light');
     } catch (e) { /* ignore */ }
   </script>
-  <link rel="stylesheet" href="./styles.css?v=17">
+  <link rel="stylesheet" href="./styles.css?v=18">
 </head>
 <body>
   <header class="navbar">
     <div class="container nav-container">
       <a href="./" class="brand"><img class="brand-mark" src="./logo.svg" alt="github-metrics logo" width="26" height="26">github<span>-metrics</span></a>
       <div class="nav-actions">
+        <a class="btn btn-sm" href="./docs.html">Docs</a>
         <a class="btn btn-sm" href="https://github.com/vsmutok/github-metrics" target="_blank" rel="noopener">Source</a>
         <button class="btn btn-sm theme-toggle" id="themeToggle" type="button" aria-label="Toggle color theme" title="Toggle color theme">
           <svg class="icon icon-moon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 7.46A9 9 0 1 1 12 3Z"/></svg>
@@ -59,7 +60,21 @@
         </div>
 
         <div class="field">
-          <label for="theme">Color theme</label>
+          <label for="style">Card style</label>
+          <select class="select" id="style">
+            <option value="classic" selected>Classic</option>
+            <option value="modern">Modern</option>
+            <option value="grid">Grid</option>
+          </select>
+        </div>
+
+        <div class="field" id="lightThemeField" hidden>
+          <label for="themeLight">Light theme</label>
+          <select class="select" id="themeLight"></select>
+        </div>
+
+        <div class="field">
+          <label for="theme" id="themeLabel">Color theme</label>
           <select class="select" id="theme">
             <optgroup label="GitHub defaults">
               <option value="github-dark" selected>GitHub Dark</option>
@@ -103,12 +118,12 @@
         </div>
 
         <div class="field">
-          <label for="style">Card style</label>
-          <select class="select" id="style">
-            <option value="classic" selected>Classic</option>
-            <option value="modern">Modern</option>
-            <option value="grid">Grid</option>
-          </select>
+          <label>Theme mode</label>
+          <div class="segmented">
+            <label><input type="radio" name="thememode" value="fixed" checked><span>Fixed</span></label>
+            <label><input type="radio" name="thememode" value="auto"><span>Auto</span></label>
+          </div>
+          <p class="hint" id="themeModeHint" hidden>Auto embeds a <code>&lt;picture&gt;</code> block with a dark and a light URL, picked by the viewer's theme.</p>
         </div>
 
         <div class="field">
@@ -155,7 +170,10 @@
           </div>
           <div class="code-row">
             <pre class="code-box"><code id="codeSnippet"></code></pre>
-            <button class="btn" id="copyBtn" type="button">Copy</button>
+            <button class="btn copy-btn" id="copyBtn" type="button" aria-label="Copy to clipboard" title="Copy to clipboard">
+              <svg class="icon icon-copy" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              <svg class="icon icon-check" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+            </button>
           </div>
           <p class="hint" id="codeHint"></p>
         </div>
@@ -166,10 +184,11 @@
   <footer class="site-footer">
     <div class="container">
       <span>© 2026 github-metrics · MIT licensed</span>
+      <a href="./docs.html">Metrics reference</a>
       <a href="https://github.com/vsmutok/github-metrics" target="_blank" rel="noopener">github.com/vsmutok/github-metrics</a>
     </div>
   </footer>
 
-  <script type="module" src="./script.js?v=17"></script>
+  <script type="module" src="./script.js?v=18"></script>
 </body>
 </html>

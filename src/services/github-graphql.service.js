@@ -1,24 +1,36 @@
 // GitHub GraphQL API Service - Contribution Calendar & Streaks
 
+import crypto from "node:crypto";
 import { withSwr } from "../utils/swr.js";
 import { loadConfig } from "../config/index.js";
 import { HttpErrorCode, httpRequest } from "../utils/http-client.js";
 
 const GITHUB_GRAPHQL_URL = "https://api.github.com/graphql";
 
-/* authorization headers for GraphQL API*/
-function getHeaders() {
+/* authorization headers for GraphQL API */
+function getHeaders(tokenOverride) {
   const config = loadConfig();
   const headers = {
     "Content-Type": "application/json",
     "User-Agent": "github-metrics",
   };
 
-  if (config.github.token) {
-    headers["Authorization"] = `Bearer ${config.github.token}`;
+  const token = tokenOverride || config.github.token;
+  if (token) {
+    headers["Authorization"] = `Bearer ${token}`;
   }
 
   return headers;
+}
+
+/* cache key — namespaced for authenticated requests so private data never
+   leaks into the public cache entry (and vice versa) */
+function contributionCacheKey(username, token) {
+  if (!token) {
+    return `contributions:${username}`;
+  }
+  const tokenHash = crypto.createHash("sha256").update(token).digest("hex").slice(0, 16);
+  return `contributions:private:${username}:${tokenHash}`;
 }
 
 /* GraphQL query for contribution calendar and additional stats */
@@ -62,14 +74,14 @@ query($username: String!, $discussionQuery: String!) {
 `;
 
 /* fetch contribution data from GitHub GraphQL API */
-async function fetchContributionData(username) {
-  if (!loadConfig().github.enabled) {
+async function fetchContributionData(username, token) {
+  if (!token && !loadConfig().github.enabled) {
     throw new Error("GITHUB_TOKEN required for contribution data");
   }
 
   const response = await httpRequest(GITHUB_GRAPHQL_URL, {
     method: "POST",
-    headers: getHeaders(),
+    headers: getHeaders(token),
     body: JSON.stringify({
       query: CONTRIBUTION_QUERY,
       variables: { username, discussionQuery: `author:${username}` },
@@ -219,7 +231,7 @@ function normalizeContributionData(userData) {
 }
 
 /* Fetch calendars for all years using dynamic aliases */
-async function fetchAllYearsData(username, startYear, endYear) {
+async function fetchAllYearsData(username, startYear, endYear, token) {
   let queryFields = "";
   const currentIso = new Date().toISOString();
   for (let y = startYear; y <= endYear; y++) {
@@ -254,7 +266,7 @@ async function fetchAllYearsData(username, startYear, endYear) {
 
   const response = await httpRequest(GITHUB_GRAPHQL_URL, {
     method: "POST",
-    headers: getHeaders(),
+    headers: getHeaders(token),
     body: JSON.stringify({
       query,
       variables: { username },
@@ -395,10 +407,11 @@ async function fetchPublicContributionData(username) {
 }
 
 /* fetch and normalize contribution data for a user (no caching) */
-async function computeContributionData(username, createdAt = null) {
-  // Without a GitHub token, fall back to public data sources so the card still
-  // renders real contributions instead of empty placeholders.
-  if (!loadConfig().github.enabled) {
+async function computeContributionData(username, createdAt = null, token = null) {
+  // Without a GitHub token (neither a server PAT nor the viewer's own OAuth
+  // token), fall back to public data sources so the card still renders real
+  // contributions instead of empty placeholders.
+  if (!token && !loadConfig().github.enabled) {
     try {
       const data = await fetchPublicContributionData(username);
       return { success: true, data };
@@ -411,7 +424,7 @@ async function computeContributionData(username, createdAt = null) {
   }
 
   try {
-    const userData = await fetchContributionData(username);
+    const userData = await fetchContributionData(username, token);
 
     if (!userData) {
       return {
@@ -428,7 +441,7 @@ async function computeContributionData(username, createdAt = null) {
 
     // if the user has contribution history in previous years, fetch them
     if (userCreatedAt && startYear && startYear < currentYear) {
-      const multiYearData = await fetchAllYearsData(username, startYear, currentYear);
+      const multiYearData = await fetchAllYearsData(username, startYear, currentYear, token);
       resultData = normalizeMultiYearData(multiYearData, userData, startYear, currentYear);
     } else {
       resultData = normalizeContributionData(userData);
@@ -444,10 +457,10 @@ async function computeContributionData(username, createdAt = null) {
 }
 
 /* fetch and normalize contribution data for a user (stale-while-revalidate) */
-export async function getContributionData(username, createdAt = null) {
+export async function getContributionData(username, createdAt = null, token = null) {
   return withSwr(
-    `contributions:${username}`,
-    () => computeContributionData(username, createdAt),
+    contributionCacheKey(username, token),
+    () => computeContributionData(username, createdAt, token),
     (result) => result?.success === true
   );
 }

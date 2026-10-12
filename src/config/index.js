@@ -57,6 +57,11 @@ export function loadConfig(env = process.env) {
   const isProduction = nodeEnv === 'production';
   const githubToken = readString(env, 'GITHUB_TOKEN');
   const mongoUri = readString(env, 'MONGODB_URI');
+  const oauthClientId = readString(env, 'GITHUB_OAUTH_CLIENT_ID');
+  const oauthClientSecret = readString(env, 'GITHUB_OAUTH_CLIENT_SECRET');
+  const oauthRedirectUri = readString(env, 'GITHUB_OAUTH_REDIRECT_URI');
+  const oauthEnabled = Boolean(oauthClientId && oauthClientSecret && oauthRedirectUri);
+  const tokenEncryptionKey = readString(env, 'TOKEN_ENCRYPTION_KEY');
   const analyticsDisabled = readBoolean(env, 'ANALYTICS_DISABLED') || readBoolean(env, 'DISABLE_ANALYTICS');
   const analyticsEnabled = !analyticsDisabled && Boolean(mongoUri);
   const cacheMaxSize = normalizePositiveInteger(
@@ -70,6 +75,13 @@ export function loadConfig(env = process.env) {
     warnings.push(`NODE_ENV is '${nodeEnv}'. Expected development, production, or test.`);
   }
 
+  if (oauthEnabled && !mongoUri) {
+    warnings.push('GitHub OAuth is enabled without MONGODB_URI: tokens are stored in memory only and will be lost on restart.');
+  }
+  if (oauthEnabled && !tokenEncryptionKey) {
+    warnings.push('GitHub OAuth is enabled without TOKEN_ENCRYPTION_KEY: stored access tokens are not encrypted at rest.');
+  }
+
   return {
     env: nodeEnv,
     isProduction,
@@ -81,6 +93,15 @@ export function loadConfig(env = process.env) {
     admin: {
       apiKey: readString(env, 'ADMIN_API_KEY') || null,
       cacheStatsProtected: Boolean(readString(env, 'ADMIN_API_KEY')),
+    },
+    oauth: {
+      clientId: oauthClientId || null,
+      clientSecret: oauthClientSecret || null,
+      redirectUri: oauthRedirectUri || null,
+      enabled: oauthEnabled,
+    },
+    security: {
+      tokenEncryptionKey: tokenEncryptionKey || null,
     },
     analytics: {
       disabled: analyticsDisabled,
@@ -103,11 +124,16 @@ export function loadConfig(env = process.env) {
         ...(!githubToken ? ['GITHUB_TOKEN'] : []),
         ...(!analyticsDisabled && !mongoUri ? ['MONGODB_URI'] : []),
         ...(!readString(env, 'ADMIN_API_KEY') ? ['ADMIN_API_KEY'] : []),
+        ...(!oauthEnabled ? ['GITHUB_OAUTH_CLIENT_ID, GITHUB_OAUTH_CLIENT_SECRET, GITHUB_OAUTH_REDIRECT_URI'] : []),
+        ...(!tokenEncryptionKey ? ['TOKEN_ENCRYPTION_KEY'] : []),
       ],
       features: {
         githubToken: Boolean(githubToken),
         analytics: analyticsEnabled,
         cacheStatsAuth: Boolean(readString(env, 'ADMIN_API_KEY')),
+        oauth: oauthEnabled,
+        tokenEncryption: Boolean(tokenEncryptionKey),
+        privateAccess: oauthEnabled && Boolean(mongoUri),
       },
     },
   };
@@ -131,6 +157,9 @@ export function logStartupDiagnostics(config, logger = console) {
 
   if (config.admin.cacheStatsProtected) enabled.push('cache stats auth');
   else disabled.push('cache stats auth');
+
+  if (config.oauth?.enabled) enabled.push('github oauth');
+  else disabled.push('github oauth');
 
   logger.info(`Features enabled: ${enabled.length ? enabled.join(', ') : 'none'}.`);
   logger.info(`Optional features disabled: ${disabled.join(', ')}.`);

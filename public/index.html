@@ -22,7 +22,7 @@
       if (light) document.documentElement.classList.add('light');
     } catch (e) { /* ignore */ }
   </script>
-  <link rel="stylesheet" href="./styles.css?v=18">
+  <link rel="stylesheet" href="./styles.css?v=21">
 </head>
 <body>
   <header class="navbar">
@@ -148,6 +148,20 @@
           </div>
         </div>
 
+        <div class="field" id="privateField" hidden>
+          <label>Private repositories</label>
+          <div class="private-row">
+            <button class="btn" id="connectGitHub" type="button">Connect GitHub</button>
+            <button class="btn" id="disconnectGitHub" type="button" hidden>Disconnect</button>
+          </div>
+          <label class="switch private-include" id="includePrivateWrap" hidden>
+            <input type="checkbox" id="includePrivate" checked>
+            <span class="switch-track"></span>
+            <span class="switch-label">Include private data in the card URL</span>
+          </label>
+          <p class="hint" id="privateHint">Connect GitHub to include private repositories and private contributions in your card.</p>
+        </div>
+
         <div class="actions">
           <button class="btn btn-primary btn-block" id="downloadSvg" type="button">Download SVG</button>
           <button class="btn btn-block" id="downloadPng" type="button">Download PNG</button>
@@ -189,6 +203,6 @@
     </div>
   </footer>
 
-  <script type="module" src="./script.js?v=18"></script>
+  <script type="module" src="./script.js?v=21"></script>
 </body>
 </html>

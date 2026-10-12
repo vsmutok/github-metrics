@@ -407,4 +407,44 @@ describe('github.service.js', () => {
     const result = await getGitHubUserData('vsmutok');
     expect(result.data.repos.length).toBe(50);
   });
+
+  // --- Private / authenticated access ---
+
+  test('uses the authenticated repos endpoint and counts private repos when a token is provided', async () => {
+    const repos = [
+      { ...REPOS_DATA[0], private: true },
+      { ...REPOS_DATA[1], private: false },
+    ];
+    const mockFetch = jest.fn()
+      .mockResolvedValueOnce(jsonResponse(PROFILE_DATA))
+      .mockResolvedValueOnce(jsonResponse(repos))
+      .mockResolvedValueOnce(jsonResponse('data', { headers: { get: () => 'image/png' } }));
+    globalThis.fetch = mockFetch;
+
+    const result = await getGitHubUserData('vsmutok', 'gho_token');
+
+    expect(result.data.totalRepos).toBe(2);
+    expect(result.data.privateRepos).toBe(1);
+    const urls = mockFetch.mock.calls.map((call) => call[0]);
+    expect(urls[0]).toContain('/users/vsmutok');
+    expect(urls[1]).toContain('/user/repos');
+    expect(mockFetch.mock.calls[0][1].headers.Authorization).toBe('Bearer gho_token');
+  });
+
+  test('keeps public and authenticated cache entries separate', async () => {
+    const mockFetch = jest.fn()
+      .mockResolvedValueOnce(jsonResponse(PROFILE_DATA))
+      .mockResolvedValueOnce(jsonResponse(REPOS_DATA))
+      .mockResolvedValueOnce(jsonResponse('data', { headers: { get: () => 'image/png' } }))
+      .mockResolvedValueOnce(jsonResponse(PROFILE_DATA))
+      .mockResolvedValueOnce(jsonResponse(REPOS_DATA))
+      .mockResolvedValueOnce(jsonResponse('data', { headers: { get: () => 'image/png' } }));
+    globalThis.fetch = mockFetch;
+
+    await getGitHubUserData('vsmutok');
+    await getGitHubUserData('vsmutok', 'gho_token');
+
+    // Six calls — the authenticated request did not reuse the public cache entry.
+    expect(mockFetch).toHaveBeenCalledTimes(6);
+  });
 });

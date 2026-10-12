@@ -278,6 +278,17 @@ html.light .theme-toggle .icon-moon { display: none; }
 
 .actions { display: grid; gap: 0.5rem; margin-top: 1rem; }
 
+/* ---------- Private access ---------- */
+.private-row { display: flex; gap: 0.5rem; margin-top: 0.25rem; }
+.private-include {
+  margin-top: 0.5rem;
+  padding: 0.5rem 0;
+  border-top: 1px solid var(--border-muted);
+}
+.private-include .switch-label { color: var(--text-muted); font-size: 12px; }
+#privateHint.connected { color: var(--success); }
+#privateHint.error { color: var(--danger, #f85149); }
+
 /* ---------- Preview ---------- */
 .preview-toolbar {
   display: flex;

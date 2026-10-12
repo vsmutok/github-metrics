@@ -489,6 +489,14 @@ function getTrophyTier(value, thresholds) {
   return { tier: 'D', color: '#64748b', glowIntensity: 0.1, label: 'Common' };
 }
 
+// Shrink long trophy labels so they fit under a badge without overlapping
+// their neighbours (domain themes use names like "Material Designer").
+function trophyLabelFontSize(label) {
+  const length = String(label).length;
+  if (length <= 11) return 10;
+  return Math.max(7, Math.round((82 / (length * 0.58)) * 10) / 10);
+}
+
 // modern style: circular medallion
 function renderTrophyMedallion({ x, y, size, tier, icon, label, value }) {
   const { colors } = currentTheme;
@@ -523,7 +531,7 @@ function renderTrophyMedallion({ x, y, size, tier, icon, label, value }) {
     <text x="${cx + r - 7}" y="${cy - r + 11}" font-family="'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="9.5" font-weight="800" fill="${colors.background}" text-anchor="middle">${safeTier}</text>
 
     <!-- label -->
-    <text x="${cx}" y="${y + size + 17}" font-family="'SF Pro Text', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="10" font-weight="600" fill="${colors.secondaryText}" text-anchor="middle">${safeLabel}</text>
+    <text x="${cx}" y="${y + size + 17}" font-family="'SF Pro Text', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="${trophyLabelFontSize(label)}" font-weight="600" fill="${colors.secondaryText}" text-anchor="middle">${safeLabel}</text>
 
     <!-- value -->
     <text x="${cx}" y="${y + size + 32}" font-family="'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="800" fill="${colors.primaryText}" text-anchor="middle">${safeValue}</text>
@@ -552,7 +560,7 @@ function renderTrophyTile({ x, y, size, tier, icon, label, value }) {
     </g>
     <circle cx="${x + size - 7}" cy="${y + 7}" r="9" fill="${tier.color}" stroke="${colors.background}" stroke-width="2"/>
     <text x="${x + size - 7}" y="${y + 11}" font-family="'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="9.5" font-weight="800" fill="${colors.background}" text-anchor="middle">${safeTier}</text>
-    <text x="${cx}" y="${y + size + 17}" font-family="'SF Pro Text', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="10" font-weight="600" fill="${colors.secondaryText}" text-anchor="middle">${safeLabel}</text>
+    <text x="${cx}" y="${y + size + 17}" font-family="'SF Pro Text', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="${trophyLabelFontSize(label)}" font-weight="600" fill="${colors.secondaryText}" text-anchor="middle">${safeLabel}</text>
     <text x="${cx}" y="${y + size + 32}" font-family="'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="800" fill="${colors.primaryText}" text-anchor="middle">${safeValue}</text>
   </g>`;
 }
@@ -584,7 +592,7 @@ function renderTrophyHex({ x, y, size, tier, icon, label, value }) {
     </g>
     <circle cx="${x + size - 8}" cy="${y + 12}" r="9" fill="${tier.color}" stroke="${colors.background}" stroke-width="2"/>
     <text x="${x + size - 8}" y="${y + 16}" font-family="'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="9.5" font-weight="800" fill="${colors.background}" text-anchor="middle">${safeTier}</text>
-    <text x="${x + halfSize}" y="${y + size + 17}" font-family="'SF Pro Text', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="10" font-weight="600" fill="${colors.secondaryText}" text-anchor="middle">${safeLabel}</text>
+    <text x="${x + halfSize}" y="${y + size + 17}" font-family="'SF Pro Text', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="${trophyLabelFontSize(label)}" font-weight="600" fill="${colors.secondaryText}" text-anchor="middle">${safeLabel}</text>
     <text x="${x + halfSize}" y="${y + size + 32}" font-family="'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="800" fill="${colors.primaryText}" text-anchor="middle">${safeValue}</text>
   </g>`;
 }

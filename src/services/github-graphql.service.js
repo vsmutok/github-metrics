@@ -218,14 +218,35 @@ function normalizeContributionData(userData) {
   };
 }
 
-/* Fetch calendars for all years using dynamic aliases */
-async function fetchAllYearsData(username, startYear, endYear) {
-  let queryFields = "";
-  const currentIso = new Date().toISOString();
-  for (let y = startYear; y <= endYear; y++) {
-    const toDate = y === endYear ? currentIso : `${y}-12-31T23:59:59Z`;
-    queryFields += `
-      y${y}: contributionsCollection(from: "${y}-01-01T00:00:00Z", to: "${toDate}") {
+const MULTI_YEAR_CONCURRENCY = 6;
+
+/* Run async tasks with a bounded number of concurrent requests */
+async function mapWithConcurrency(items, limit, mapper) {
+  const results = new Array(items.length);
+  let nextIndex = 0;
+
+  async function worker() {
+    while (nextIndex < items.length) {
+      const current = nextIndex;
+      nextIndex += 1;
+      results[current] = await mapper(items[current]);
+    }
+  }
+
+  const workers = [];
+  const workerCount = Math.min(limit, items.length);
+  for (let i = 0; i < workerCount; i++) {
+    workers.push(worker());
+  }
+  await Promise.all(workers);
+
+  return results;
+}
+
+const YEAR_CONTRIBUTION_QUERY = `
+  query($username: String!, $from: DateTime!, $to: DateTime!) {
+    user(login: $username) {
+      contributionsCollection(from: $from, to: $to) {
         totalCommitContributions
         totalPullRequestContributions
         totalPullRequestReviewContributions
@@ -241,36 +262,60 @@ async function fetchAllYearsData(username, startYear, endYear) {
           }
         }
       }
-    `;
-  }
-
-  const query = `
-    query($username: String!) {
-      user(login: $username) {
-        ${queryFields}
-      }
     }
-  `;
+  }
+`;
+
+/* Fetch a single year's contribution collection */
+async function fetchYearContributions(username, year, endYear) {
+  const toDate = year === endYear ? new Date().toISOString() : `${year}-12-31T23:59:59Z`;
 
   const response = await httpRequest(GITHUB_GRAPHQL_URL, {
     method: "POST",
     headers: getHeaders(),
     body: JSON.stringify({
-      query,
-      variables: { username },
+      query: YEAR_CONTRIBUTION_QUERY,
+      variables: {
+        username,
+        from: `${year}-01-01T00:00:00Z`,
+        to: toDate,
+      },
     }),
   });
 
   if (!response.success) {
-    throw new Error(`GitHub GraphQL API error when fetching multi-year data: ${response.status || 0}`);
+    throw new Error(`GitHub GraphQL API error when fetching year ${year}: ${response.status || 0}`);
   }
 
   const json = response.data;
   if (json.errors) {
-    throw new Error(json.errors[0]?.message || "GraphQL query for multi-year data failed");
+    throw new Error(json.errors[0]?.message || `GraphQL query for year ${year} failed`);
   }
 
-  return json.data?.user;
+  return json.data?.user?.contributionsCollection ?? null;
+}
+
+/* Fetch calendars for all years. Requests run concurrently (bounded) instead
+   of one giant aliased query, which keeps cold renders well under proxy
+   timeouts. */
+async function fetchAllYearsData(username, startYear, endYear) {
+  const years = [];
+  for (let y = startYear; y <= endYear; y++) {
+    years.push(y);
+  }
+
+  const collections = await mapWithConcurrency(
+    years,
+    MULTI_YEAR_CONCURRENCY,
+    (year) => fetchYearContributions(username, year, endYear)
+  );
+
+  const userData = {};
+  years.forEach((year, index) => {
+    userData[`y${year}`] = collections[index];
+  });
+
+  return userData;
 }
 
 /* normalize multi-year contribution data */
@@ -411,7 +456,20 @@ async function computeContributionData(username, createdAt = null) {
   }
 
   try {
-    const userData = await fetchContributionData(username);
+    const currentYear = new Date().getFullYear();
+
+    // The user-level query (trophies + createdAt) and the per-year calendars
+    // are independent once we know the account's creation year. When the
+    // caller passes createdAt (the route already has it from the REST profile)
+    // both run in parallel, keeping the cold render fast.
+    const initialPromise = fetchContributionData(username);
+    let startYear = createdAt ? new Date(createdAt).getFullYear() : null;
+    const startYearsEarly = Boolean(startYear && startYear < currentYear);
+
+    const [userData, earlyMultiYearData] = await Promise.all([
+      initialPromise,
+      startYearsEarly ? fetchAllYearsData(username, startYear, currentYear) : Promise.resolve(null),
+    ]);
 
     if (!userData) {
       return {
@@ -420,15 +478,16 @@ async function computeContributionData(username, createdAt = null) {
       };
     }
 
-    const userCreatedAt = createdAt || userData.createdAt;
-    const currentYear = new Date().getFullYear();
-    const startYear = userCreatedAt ? new Date(userCreatedAt).getFullYear() : null;
+    if (!startYear) {
+      startYear = userData.createdAt ? new Date(userData.createdAt).getFullYear() : null;
+    }
 
     let resultData;
 
     // if the user has contribution history in previous years, fetch them
-    if (userCreatedAt && startYear && startYear < currentYear) {
-      const multiYearData = await fetchAllYearsData(username, startYear, currentYear);
+    if (startYear && startYear < currentYear) {
+      const multiYearData = earlyMultiYearData
+        || await fetchAllYearsData(username, startYear, currentYear);
       resultData = normalizeMultiYearData(multiYearData, userData, startYear, currentYear);
     } else {
       resultData = normalizeContributionData(userData);

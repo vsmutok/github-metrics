@@ -459,37 +459,61 @@ describe('github-graphql.service.js', () => {
     // y2024: 1 contribution day on 2024-06-01 (count: 5)
     // y2025: 2 consecutive contribution days on 2025-06-01 (count: 3), 2025-06-02 (count: 4)
     // y2026: 2 consecutive contribution days ending yesterday/today (2026-06-12 (count: 1), 2026-06-13 (count: 1))
-    const secondResponse = {
-      data: {
-        user: {
-          y2024: {
-            totalCommitContributions: 100,
-            totalPullRequestContributions: 12,
-            totalPullRequestReviewContributions: 3,
-            totalIssueContributions: 4,
-            contributionCalendar: buildCalendar([0, 0, 5, 0], '2024-05-30')
+    const yearResponses = {
+      2024: {
+        data: {
+          user: {
+            contributionsCollection: {
+              totalCommitContributions: 100,
+              totalPullRequestContributions: 12,
+              totalPullRequestReviewContributions: 3,
+              totalIssueContributions: 4,
+              contributionCalendar: buildCalendar([0, 0, 5, 0], '2024-05-30')
+            },
           },
-          y2025: {
-            totalCommitContributions: 200,
-            totalPullRequestContributions: 22,
-            totalPullRequestReviewContributions: 13,
-            totalIssueContributions: 14,
-            contributionCalendar: buildCalendar([0, 3, 4, 0], '2025-05-31')
+        },
+      },
+      2025: {
+        data: {
+          user: {
+            contributionsCollection: {
+              totalCommitContributions: 200,
+              totalPullRequestContributions: 22,
+              totalPullRequestReviewContributions: 13,
+              totalIssueContributions: 14,
+              contributionCalendar: buildCalendar([0, 3, 4, 0], '2025-05-31')
+            },
           },
-          y2026: {
-            totalCommitContributions: 50,
-            totalPullRequestContributions: 5,
-            totalPullRequestReviewContributions: 2,
-            totalIssueContributions: 1,
-            contributionCalendar: buildCalendar([0, 1, 1], '2026-06-11')
-          }
-        }
-      }
+        },
+      },
+      2026: {
+        data: {
+          user: {
+            contributionsCollection: {
+              totalCommitContributions: 50,
+              totalPullRequestContributions: 5,
+              totalPullRequestReviewContributions: 2,
+              totalIssueContributions: 1,
+              contributionCalendar: buildCalendar([0, 1, 1], '2026-06-11')
+            },
+          },
+        },
+      },
     };
 
-    globalThis.fetch = jest.fn()
-      .mockResolvedValueOnce(jsonResponse(firstResponse))
-      .mockResolvedValueOnce(jsonResponse(secondResponse));
+    globalThis.fetch = jest.fn(async (_url, options = {}) => {
+      try {
+        const body = options?.body ? JSON.parse(options.body) : null;
+        const from = body?.variables?.from;
+        const year = from ? Number(String(from).slice(0, 4)) : null;
+        if (year && yearResponses[year]) {
+          return jsonResponse(yearResponses[year]);
+        }
+      } catch (_) {
+        // fall through to the initial response
+      }
+      return jsonResponse(firstResponse);
+    });
 
     const result = await getContributionData('multiyear-user');
 
@@ -520,5 +544,81 @@ describe('github-graphql.service.js', () => {
     expect(result.data.currentStreak).toBe(2);
     expect(result.data.longestStreak).toBe(2);
     expect(result.data.totalContributionDays).toBe(5);
+  });
+
+  test('runs the user query and per-year queries in parallel when createdAt is provided', async () => {
+    const initialResponse = {
+      data: {
+        user: {
+          createdAt: '2025-01-01T00:00:00Z',
+          contributionsCollection: {
+            totalCommitContributions: 1,
+            totalPullRequestContributions: 0,
+            totalPullRequestReviewContributions: 0,
+            totalIssueContributions: 0,
+            restrictedContributionsCount: 0,
+            contributionCalendar: buildCalendar([0, 0]),
+          },
+          pullRequests: { totalCount: 7 },
+          issues: { totalCount: 3 },
+        },
+      },
+    };
+
+    const yearResponses = {
+      2025: {
+        data: {
+          user: {
+            contributionsCollection: {
+              totalCommitContributions: 20,
+              totalPullRequestContributions: 2,
+              totalPullRequestReviewContributions: 1,
+              totalIssueContributions: 3,
+              contributionCalendar: buildCalendar([0, 3, 4, 0], '2025-05-31'),
+            },
+          },
+        },
+      },
+      2026: {
+        data: {
+          user: {
+            contributionsCollection: {
+              totalCommitContributions: 5,
+              totalPullRequestContributions: 1,
+              totalPullRequestReviewContributions: 0,
+              totalIssueContributions: 1,
+              contributionCalendar: buildCalendar([0, 1, 1], '2026-06-11'),
+            },
+          },
+        },
+      },
+    };
+
+    globalThis.fetch = jest.fn(async (_url, options = {}) => {
+      try {
+        const body = options?.body ? JSON.parse(options.body) : null;
+        const from = body?.variables?.from;
+        const year = from ? Number(String(from).slice(0, 4)) : null;
+        if (year && yearResponses[year]) {
+          return jsonResponse(yearResponses[year]);
+        }
+      } catch (_) {
+        // fall through to the initial response
+      }
+      return jsonResponse(initialResponse);
+    });
+
+    const result = await getContributionData('created-at-user', '2025-01-01T00:00:00Z');
+
+    expect(result.success).toBe(true);
+    expect(result.data.totalCommits).toBe(25);
+    expect(result.data.totalPRs).toBe(3);
+    expect(result.data.totalReviews).toBe(1);
+    expect(result.data.totalIssues).toBe(4);
+    expect(result.data.totalContributions).toBe(9);
+    expect(result.data.prsMerged).toBe(7);
+    expect(result.data.issuesClosed).toBe(3);
+    // One user-level query plus one request per year (2025, 2026).
+    expect(globalThis.fetch).toHaveBeenCalledTimes(3);
   });
 });

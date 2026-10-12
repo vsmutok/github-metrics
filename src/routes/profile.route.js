@@ -87,20 +87,7 @@ router.get('/', async (req, res) => {
 
     let showRepositoryStats = !shouldRenderLeetCode;
 
-    // Fetch all user data sources in parallel
-    const [
-      githubResult,
-      contributionResult,
-      leetcodeResult,
-      codeforcesResult,
-      codechefResult,
-    ] = await Promise.all([
-      getGitHubUserData(username),
-      getContributionData(username), // Fetches userCreatedAt inside the service when needed
-      shouldRenderLeetCode ? getLeetCodeData(leetcode) : null,
-      codeforces ? getCodeforcesData(codeforces) : null,
-      codechef ? getCodeChefData(codechef) : null,
-    ]);
+    const githubResult = await getGitHubUserData(username);
 
     if (!githubResult.success) {
       return sendGracefulErrorSvg(res, {
@@ -110,6 +97,21 @@ router.get('/', async (req, res) => {
       });
     }
     const { data } = githubResult;
+
+    // Fetch remaining data sources in parallel. The contribution service
+    // receives createdAt so it can start the per-year calendar requests
+    // immediately instead of waiting on a second GraphQL round trip.
+    const [
+      contributionResult,
+      leetcodeResult,
+      codeforcesResult,
+      codechefResult,
+    ] = await Promise.all([
+      getContributionData(username, data.createdAt), // Fetches userCreatedAt inside the service when needed
+      shouldRenderLeetCode ? getLeetCodeData(leetcode) : null,
+      codeforces ? getCodeforcesData(codeforces) : null,
+      codechef ? getCodeChefData(codechef) : null,
+    ]);
 
     const contributionData = contributionResult.success ? contributionResult.data : null;
     const leetcodeData = leetcodeResult?.success ? leetcodeResult.data : null;

@@ -13,6 +13,7 @@ import {
 const DEFAULT_THEME = 'github-dark';
 const DEFAULT_USERNAME = 'vsmutok';
 const THEME_KEY = 'gm-theme';
+const USER_KEY_STORAGE = 'gm-user-key';
 
 const DEFAULT_SECTIONS = Object.fromEntries(DASHBOARD_SECTIONS.map((key) => [key, true]));
 
@@ -47,6 +48,12 @@ const els = {
   themeToggle: document.getElementById('themeToggle'),
   chips: document.querySelectorAll('.chip'),
   tabs: document.querySelectorAll('.tab'),
+  privateField: document.getElementById('privateField'),
+  connectGitHub: document.getElementById('connectGitHub'),
+  disconnectGitHub: document.getElementById('disconnectGitHub'),
+  includePrivateWrap: document.getElementById('includePrivateWrap'),
+  includePrivate: document.getElementById('includePrivate'),
+  privateHint: document.getElementById('privateHint'),
 };
 
 const state = {
@@ -62,6 +69,15 @@ const state = {
 
 let liveProfile = null; // cached live profile for the current username
 let debounceTimer = null;
+
+const authState = {
+  enabled: false,
+  authenticated: false,
+  login: null,
+  include: true,
+  error: null,
+  checked: false,
+};
 
 function formatNumber(num) {
   if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
@@ -239,6 +255,121 @@ function renderPreview() {
     : `${state.username} · ${state.theme}`;
 }
 
+/* ---------- Private access (GitHub OAuth) ---------- */
+function apiOrigin() {
+  return window.location.origin;
+}
+
+function isStaticHost() {
+  return window.location.hostname.endsWith('github.io');
+}
+
+function getUserKey() {
+  try {
+    return localStorage.getItem(USER_KEY_STORAGE);
+  } catch (error) {
+    return null;
+  }
+}
+
+function ensureUserKey() {
+  let key = getUserKey();
+  if (!key) {
+    const bytes = new Uint8Array(16);
+    crypto.getRandomValues(bytes);
+    key = Array.from(bytes).map((b) => b.toString(16).padStart(2, '0')).join('');
+    try {
+      localStorage.setItem(USER_KEY_STORAGE, key);
+    } catch (error) { /* ignore */ }
+  }
+  return key;
+}
+
+function removeUserKey() {
+  try {
+    localStorage.removeItem(USER_KEY_STORAGE);
+  } catch (error) { /* ignore */ }
+}
+
+// The user_key is only attached when it belongs to the username being shown, so
+// a shared card URL can never expose one account's private data under another.
+function shouldIncludePrivate() {
+  return authState.authenticated
+    && authState.include
+    && Boolean(authState.login)
+    && Boolean(getUserKey())
+    && authState.login.toLowerCase() === state.username.toLowerCase();
+}
+
+function applyPrivateAccess() {
+  if (!els.privateField) return;
+
+  // Hide entirely when the API is unavailable (static hosting) or OAuth is not
+  // configured on this server. `checked` avoids a flash before status is known.
+  if (isStaticHost() || !authState.checked || !authState.enabled) {
+    els.privateField.hidden = true;
+    return;
+  }
+  els.privateField.hidden = false;
+
+  els.connectGitHub.hidden = authState.authenticated;
+  els.disconnectGitHub.hidden = !authState.authenticated;
+  els.includePrivateWrap.hidden = !authState.authenticated;
+  if (els.includePrivate) els.includePrivate.checked = authState.include;
+
+  els.privateHint.classList.remove('connected', 'error');
+  if (authState.error) {
+    els.privateHint.textContent = 'Could not connect to GitHub. Please try again.';
+    els.privateHint.classList.add('error');
+  } else if (authState.authenticated) {
+    els.privateHint.textContent = `Connected as @${authState.login}. Private repositories and contributions are included when the username matches.`;
+    els.privateHint.classList.add('connected');
+  } else {
+    els.privateHint.textContent = 'Connect GitHub to include private repositories and private contributions in your card.';
+  }
+}
+
+async function refreshAuthStatus() {
+  if (isStaticHost()) {
+    applyPrivateAccess();
+    return;
+  }
+  authState.checked = true;
+  try {
+    const statusRes = await fetch(`${apiOrigin()}/api/auth/status`, { headers: { Accept: 'application/json' } });
+    const status = await statusRes.json();
+    authState.enabled = Boolean(status.enabled);
+    if (!authState.enabled) {
+      applyPrivateAccess();
+      return;
+    }
+  } catch (error) {
+    applyPrivateAccess();
+    return;
+  }
+
+  const key = getUserKey();
+  if (key) {
+    try {
+      const res = await fetch(`${apiOrigin()}/api/auth/session?user_key=${encodeURIComponent(key)}`, {
+        headers: { Accept: 'application/json' },
+      });
+      const data = await res.json();
+      authState.authenticated = Boolean(data.authenticated);
+      authState.login = data.login || null;
+    } catch (error) {
+      authState.authenticated = false;
+      authState.login = null;
+    }
+  }
+
+  if (authState.authenticated) {
+    authState.error = null;
+  }
+  applyPrivateAccess();
+  renderSnippet();
+}
+
 function baseUrl() {
   return window.location.origin + window.location.pathname.replace(/\/[^/]*$/, '');
 }
@@ -253,6 +384,9 @@ function buildQuery(themeOverride) {
   DASHBOARD_SECTIONS.forEach((key) => {
     if (!state.sections[key]) params.set(SECTION_HIDE_PARAM[key], 'true');
   });
+  if (shouldIncludePrivate()) {
+    params.set('user_key', getUserKey());
+  }
   return params.toString();
 }
 
@@ -306,6 +440,10 @@ function renderSnippet() {
     els.hint.textContent = 'GitHub Pages cannot run the API — host it (see README) so live, per-user cards work.';
   } else {
     els.hint.textContent = 'Served by this self-hosted instance.';
+  }
+
+  if (shouldIncludePrivate()) {
+    els.hint.textContent += ' Private repositories and contributions are included.';
   }
 }
 
@@ -415,6 +553,39 @@ els.chips.forEach((chip) => {
     refreshForUsername();
   });
 });
+
+if (els.connectGitHub) {
+  els.connectGitHub.addEventListener('click', () => {
+    const key = ensureUserKey();
+    window.location.href = `${apiOrigin()}/api/auth/login?user_key=${encodeURIComponent(key)}`;
+  });
+}
+
+if (els.disconnectGitHub) {
+  els.disconnectGitHub.addEventListener('click', async () => {
+    const key = getUserKey();
+    els.disconnectGitHub.disabled = true;
+    try {
+      if (key) {
+        await fetch(`${apiOrigin()}/api/auth/logout?user_key=${encodeURIComponent(key)}`, { method: 'POST' });
+      }
+    } catch (error) { /* ignore */ }
+    els.disconnectGitHub.disabled = false;
+    removeUserKey();
+    authState.authenticated = false;
+    authState.login = null;
+    authState.error = null;
+    applyPrivateAccess();
+    renderSnippet();
+  });
+}
+
+if (els.includePrivate) {
+  els.includePrivate.addEventListener('change', () => {
+    authState.include = els.includePrivate.checked;
+    renderSnippet();
+  });
+}
 
 els.copy.addEventListener('click', async () => {
   try {
@@ -554,6 +725,24 @@ els.themeToggle.addEventListener('click', () => {
   const stored = storedSiteTheme();
   const isLight = stored ? stored === 'light' : prefersLight();
   applySiteTheme(isLight, { persist: false });
+
+  // Handle the redirect coming back from the GitHub OAuth flow.
+  try {
+    const params = new URLSearchParams(window.location.search);
+    const auth = params.get('auth');
+    if (auth === 'success') {
+      authState.authenticated = true;
+      authState.login = params.get('login');
+    } else if (auth === 'error') {
+      authState.error = params.get('reason') || 'error';
+    }
+    if (auth) {
+      window.history.replaceState({}, '', window.location.pathname);
+    }
+  } catch (error) { /* ignore */ }
+
+  applyPrivateAccess();
+  refreshAuthStatus();
 
   // Follow the OS preference until the visitor picks a theme explicitly.
   try {

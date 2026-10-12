@@ -43,6 +43,7 @@
         <a href="#tiers">Trophy tiers</a>
         <a href="#cp">Competitive programming</a>
         <a href="#styles">Styles</a>
+        <a href="#private">Private data</a>
       </nav>
     </div>
 
@@ -187,6 +188,26 @@
         </table>
       </div>
       <p>See the <a href="./">interactive demo</a> to try themes, styles and hidden sections, and the <a href="https://github.com/vsmutok/github-metrics#query-parameters" target="_blank" rel="noopener">README</a> for the full parameter list.</p>
+    </section>
+
+    <section id="private">
+      <h2>Private data</h2>
+      <p>Cards only see public data unless the deployment has GitHub OAuth configured. When it does, the studio shows a <strong>Connect GitHub</strong> button. Authorizing lets the card include your <strong>private repositories</strong> and <strong>private contributions</strong>.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Step</th><th>What happens</th></tr></thead>
+          <tbody>
+            <tr><td>Connect</td><td>The studio keeps a random <code>user_key</code> in your browser and sends you through GitHub's consent screen.</td></tr>
+            <tr><td>Store</td><td>The server exchanges the code for a token, encrypts it (AES-256-GCM) and stores it against the <code>user_key</code>.</td></tr>
+            <tr><td>Embed</td><td>The <code>user_key</code> — never the token — is added to the card URL.</td></tr>
+            <tr><td>Render</td><td>The server loads the token and fetches private repos and private contribution counts for your account.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="note">
+        <strong>Safety:</strong> a <code>user_key</code> is only honored when the <code>username</code> in the URL is the account that granted it, so sharing a card URL never exposes another user's private data. Disconnecting revokes the authorization on GitHub.
+      </div>
+      <p>Setup (three environment variables plus MongoDB and an encryption key) is covered in the <a href="https://github.com/vsmutok/github-metrics#private-repositories" target="_blank" rel="noopener">README</a>. Without it the feature stays hidden.</p>
     </section>
   </main>
 

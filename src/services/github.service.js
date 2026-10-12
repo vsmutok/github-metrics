@@ -1,10 +1,24 @@
 // GitHub REST API Service
 
+import crypto from 'node:crypto';
 import { withSwr } from '../utils/swr.js';
 import { loadConfig } from '../config/index.js';
 import { HttpErrorCode, httpRequest } from '../utils/http-client.js';
 
 const GITHUB_API_BASE = 'https://api.github.com';
+
+/**
+ * Cache key for a user. Public requests keep the bare username (stable across
+ * the codebase); authenticated ones are namespaced and keyed by a hash of the
+ * token so private and public data never collide.
+ */
+function cacheKeyFor(username, token) {
+  if (!token) {
+    return username;
+  }
+  const tokenHash = crypto.createHash('sha256').update(token).digest('hex').slice(0, 16);
+  return `private:${username}:${tokenHash}`;
+}
 
 export const GitHubErrorCode = {
   NOT_FOUND: 'NOT_FOUND',
@@ -49,15 +63,16 @@ function errorFromStatus(status) {
 }
 
 /* function to get authorization headers once to use it everywhere */
-function getHeaders() {
+function getHeaders(tokenOverride) {
   const config = loadConfig();
   const headers = {
     'Accept': 'application/vnd.github.v3+json',
     'User-Agent': 'github-metrics',
   };
 
-  if (config.github.token) {
-    headers['Authorization'] = `Bearer ${config.github.token}`;
+  const token = tokenOverride || config.github.token;
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
   }
 
   return headers;
@@ -82,34 +97,40 @@ async function assertOk(response) {
 }
 
 /* fetch user profile from GitHub API */
-async function fetchUserProfile(username) {
+async function fetchUserProfile(username, token) {
   const response = await httpRequest(`${GITHUB_API_BASE}/users/${username}`, {
-    headers: getHeaders(),
+    headers: getHeaders(token),
   });
 
   await assertOk(response);
   return response.data;
 }
 
-/* fetch public repos for a user */
-async function fetchUserRepos(username) {
+/* build the repos URL — authenticated requests include private repositories */
+function reposUrl(username, token, page, perPage) {
+  const base = token
+    ? `${GITHUB_API_BASE}/user/repos?affiliation=owner&visibility=all`
+    : `${GITHUB_API_BASE}/users/${username}/repos`;
+  return `${base}&per_page=${perPage}&page=${page}&sort=updated`;
+}
+
+/* fetch repos for a user (public only, or all when authenticated) */
+async function fetchUserRepos(username, token) {
   const perPage = 100;
 
   // Fetch first page
-  const response1 = await httpRequest(
-    `${GITHUB_API_BASE}/users/${username}/repos?per_page=${perPage}&page=1&sort=updated`,
-    { headers: getHeaders() }
-  );
+  const response1 = await httpRequest(reposUrl(username, token, 1, perPage), {
+    headers: getHeaders(token),
+  });
   await assertOk(response1);
   const repos = response1.data || [];
 
   // If first page has exactly 100 items, fetch pages 2 and 3 in parallel
   if (repos.length === perPage) {
     const promises = [2, 3].map(page =>
-      httpRequest(
-        `${GITHUB_API_BASE}/users/${username}/repos?per_page=${perPage}&page=${page}&sort=updated`,
-        { headers: getHeaders() }
-      )
+      httpRequest(reposUrl(username, token, page, perPage), {
+        headers: getHeaders(token),
+      })
     );
 
     const responses = await Promise.all(promises);
@@ -178,8 +199,12 @@ async function fetchAvatarDataUri(avatarUrl) {
 }
 
 /* normalize all data into a clean object */
-function normalizeUserData(profile, repos, avatarDataUri) {
+function normalizeUserData(profile, repos, avatarDataUri, { authenticated = false } = {}) {
   const totalStars = calculateTotalStars(repos);
+  // Authenticated requests fetch every repo the viewer can see (public +
+  // private), so the fetched length is a better "total repositories" signal
+  // than the public_repos counter returned by the /users endpoint.
+  const privateRepos = repos.filter((repo) => repo.private).length;
 
   return {
     username: profile.login,
@@ -191,6 +216,8 @@ function normalizeUserData(profile, repos, avatarDataUri) {
     company: profile.company || '',
     blog: profile.blog || '',
     publicRepos: profile.public_repos,
+    totalRepos: authenticated ? repos.length : profile.public_repos,
+    privateRepos,
     followers: profile.followers,
     following: profile.following,
     createdAt: profile.created_at,
@@ -201,6 +228,7 @@ function normalizeUserData(profile, repos, avatarDataUri) {
       stars: repo.stargazers_count,
       forks: repo.forks_count,
       language: repo.language,
+      private: Boolean(repo.private),
       topics: repo.topics || [],
       url: repo.html_url,
       updatedAt: repo.updated_at,
@@ -209,16 +237,16 @@ function normalizeUserData(profile, repos, avatarDataUri) {
 }
 
 /* fetch and normalize all GitHub data for a user (no caching) */
-async function fetchGitHubUserData(username) {
+async function fetchGitHubUserData(username, token) {
   try {
-    const profilePromise = fetchUserProfile(username);
-    const reposPromise = fetchUserRepos(username);
+    const profilePromise = fetchUserProfile(username, token);
+    const reposPromise = fetchUserRepos(username, token);
     const [profile, repos] = await Promise.all([profilePromise, reposPromise]);
     const avatarDataUri = await fetchAvatarDataUri(profile.avatar_url);
 
     return {
       success: true,
-      data: normalizeUserData(profile, repos, avatarDataUri),
+      data: normalizeUserData(profile, repos, avatarDataUri, { authenticated: Boolean(token) }),
     };
   } catch (error) {
     if (error instanceof GitHubRequestError) {
@@ -239,6 +267,10 @@ async function fetchGitHubUserData(username) {
 }
 
 /* fetch and normalize all GitHub data for a user (stale-while-revalidate) */
-export async function getGitHubUserData(username) {
-  return withSwr(username, () => fetchGitHubUserData(username), (result) => result?.success === true);
+export async function getGitHubUserData(username, token = null) {
+  return withSwr(
+    cacheKeyFor(username, token),
+    () => fetchGitHubUserData(username, token),
+    (result) => result?.success === true,
+  );
 }

@@ -21,6 +21,21 @@ Base URL: `/api/profile`
 | `hide_trophies` | boolean | `false` | Set to `true` to omit the achievement trophy row. |
 | `hide_header` | boolean | `false` | Set to `true` to hide the profile header and show statistics only. |
 | `bg`, `text`, `accent`, `card_bg`, `border`, `sec_text`, `muted_text` | hex | – | Per-color overrides applied on top of the selected theme. |
+| `user_key` | string | – | Opaque key that unlocks the connected account's private repositories/contributions. Added by the studio; never contains the token. |
+
+---
+
+## Private Repositories (GitHub OAuth)
+
+When the deployment sets `GITHUB_OAUTH_CLIENT_ID`, `GITHUB_OAUTH_CLIENT_SECRET`, `GITHUB_OAUTH_REDIRECT_URI`, `TOKEN_ENCRYPTION_KEY` and `MONGODB_URI`, the studio exposes a "Connect GitHub" flow:
+
+- `GET /api/auth/status` → `{ enabled, persistent, encrypted }`
+- `GET /api/auth/login?user_key=…` → 302 to GitHub's consent screen
+- `GET /api/auth/callback` → exchanges the code, stores the encrypted token
+- `GET /api/auth/session?user_key=…` → `{ enabled, authenticated, login, privateAccess }`
+- `POST /api/auth/logout?user_key=…` → revokes the GitHub authorization and deletes the token
+
+The token is stored server-side (encrypted, AES-256-GCM) and keyed by `user_key`. Cards include private data only when the `username` matches the account that granted the `user_key`.
 
 ---
 

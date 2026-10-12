@@ -3,6 +3,8 @@ import { setTheme, wrapSvg } from '../renderers/svg.renderer.js';
 import { renderDashboard } from '../renderers/dashboard.renderer.js';
 import { getGitHubUserData } from '../services/github.service.js';
 import { getContributionData } from '../services/github-graphql.service.js';
+import { getTokenByKey } from '../services/token-store.service.js';
+import config from '../config/index.js';
 import { getLeetCodeData } from '../services/leetcode.service.js';
 import { getCodeforcesData } from '../services/codeforces.service.js';
 import { getCodeChefData } from '../services/codechef.service.js';
@@ -16,6 +18,32 @@ import { buildDashboardAccessibility } from '../utils/svg-accessibility.js';
 import { createHybridTheme, validateThemeAccessibility } from '../utils/theme-accessibility.js';
 
 const router = Router();
+
+const USER_KEY_REGEX = /^[A-Za-z0-9_-]{16,64}$/;
+
+/**
+ * Resolve the OAuth token for a request, if any. A token is only applied when
+ * the requested username matches the account that granted it, so a leaked
+ * user_key cannot be used to read a different user's private data.
+ */
+async function resolveUserToken(req, username) {
+  if (!config.oauth?.enabled) {
+    return null;
+  }
+  const rawKey = typeof req.query.user_key === 'string' ? req.query.user_key.trim() : '';
+  if (!USER_KEY_REGEX.test(rawKey)) {
+    return null;
+  }
+  try {
+    const stored = await getTokenByKey(rawKey);
+    if (stored && stored.userId.toLowerCase() === username.toLowerCase()) {
+      return stored.accessToken;
+    }
+  } catch (error) {
+    console.error('Failed to resolve user token:', error?.message || error);
+  }
+  return null;
+}
 
 // Security: Implement strict Content-Security-Policy for SVG responses
 router.use((req, res, next) => {
@@ -87,6 +115,10 @@ router.get('/', async (req, res) => {
 
     let showRepositoryStats = !shouldRenderLeetCode;
 
+    // Apply the viewer's OAuth token (when present) so private repositories
+    // and private contributions are included for their own account.
+    const userToken = await resolveUserToken(req, username);
+
     // Fetch all user data sources in parallel
     const [
       githubResult,
@@ -95,8 +127,8 @@ router.get('/', async (req, res) => {
       codeforcesResult,
       codechefResult,
     ] = await Promise.all([
-      getGitHubUserData(username),
-      getContributionData(username), // Fetches userCreatedAt inside the service when needed
+      getGitHubUserData(username, userToken),
+      getContributionData(username, null, userToken), // Fetches userCreatedAt inside the service when needed
       shouldRenderLeetCode ? getLeetCodeData(leetcode) : null,
       codeforces ? getCodeforcesData(codeforces) : null,
       codechef ? getCodeChefData(codechef) : null,
@@ -165,7 +197,7 @@ router.get('/', async (req, res) => {
         } else {
           card3Title = 'Repository Stats';
           card3Stats = [
-            { label: 'Repositories', value: formatNumber(data.publicRepos) },
+            { label: 'Repositories', value: formatNumber(data.totalRepos ?? data.publicRepos) },
             { label: 'Stars', value: formatNumber(data.totalStars) },
             { label: 'Followers', value: formatNumber(data.followers) },
           ];
@@ -216,7 +248,7 @@ router.get('/', async (req, res) => {
     } else {
       card3Title = 'Repository Stats';
       card3Stats = [
-        { label: 'Repositories', value: formatNumber(data.publicRepos) },
+        { label: 'Repositories', value: formatNumber(data.totalRepos ?? data.publicRepos) },
         { label: 'Stars', value: formatNumber(data.totalStars) },
         { label: 'Followers', value: formatNumber(data.followers) },
       ];
@@ -248,7 +280,7 @@ router.get('/', async (req, res) => {
       commits: Number(contributionData?.totalContributions) || 0,
       prs: Number(contributionData?.totalPRs) || 0,
       issues: Number(contributionData?.totalIssues) || 0,
-      repos: Number(data?.publicRepos) || 0,
+      repos: Number(data?.totalRepos ?? data?.publicRepos) || 0,
       stars: Number(data?.totalStars) || 0,
       followers: Number(data?.followers) || 0,
       reviews: Number(contributionData?.totalReviews) || 0,

@@ -18,3 +18,7 @@ The default theme is `github-dark`. Override it and add LeetCode stats:
 ```markdown
 ![github-metrics](https://your-domain.com/api/profile?username=vsmutok&theme=github-light&leetcode=YOUR_LEETCODE_USERNAME)
 ```
+
+## Private repositories
+
+When the deployment has GitHub OAuth configured, users can connect their account in the studio to include private repositories and private contributions. The token stays server-side; cards carry only an opaque `user_key` that is honored solely for the account that granted it.

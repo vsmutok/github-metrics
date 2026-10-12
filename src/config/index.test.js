@@ -26,6 +26,15 @@ describe('config', () => {
         maxSize: 1000,
         defaultTtlMs: 300000,
       },
+      oauth: {
+        clientId: null,
+        clientSecret: null,
+        redirectUri: null,
+        enabled: false,
+      },
+      security: {
+        tokenEncryptionKey: null,
+      },
       defaults: {
         username: 'vsmutok',
       },
@@ -34,6 +43,8 @@ describe('config', () => {
       'GITHUB_TOKEN',
       'MONGODB_URI',
       'ADMIN_API_KEY',
+      'GITHUB_OAUTH_CLIENT_ID, GITHUB_OAUTH_CLIENT_SECRET, GITHUB_OAUTH_REDIRECT_URI',
+      'TOKEN_ENCRYPTION_KEY',
     ]);
   });
 
@@ -47,6 +58,10 @@ describe('config', () => {
       MONGODB_DB: 'github_metrics_test',
       CACHE_MAX_SIZE: '42',
       DEFAULT_USERNAME: 'vsmutok',
+      GITHUB_OAUTH_CLIENT_ID: 'client-id',
+      GITHUB_OAUTH_CLIENT_SECRET: 'client-secret',
+      GITHUB_OAUTH_REDIRECT_URI: 'https://example.test/api/auth/callback',
+      TOKEN_ENCRYPTION_KEY: 'encryption-key',
     });
 
     expect(config).toMatchObject({
@@ -71,11 +86,25 @@ describe('config', () => {
         maxSize: 42,
         defaultTtlMs: 1800000,
       },
+      oauth: {
+        clientId: 'client-id',
+        clientSecret: 'client-secret',
+        redirectUri: 'https://example.test/api/auth/callback',
+        enabled: true,
+      },
+      security: {
+        tokenEncryptionKey: 'encryption-key',
+      },
       defaults: {
         username: 'vsmutok',
       },
     });
     expect(config.diagnostics.missingOptional).toEqual([]);
+    expect(config.diagnostics.features).toMatchObject({
+      oauth: true,
+      tokenEncryption: true,
+      privateAccess: true,
+    });
   });
 
   test('reports invalid ports as startup errors', () => {

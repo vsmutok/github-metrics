@@ -36,6 +36,7 @@
 - [Themes](#themes)
 - [Card styles](#card-styles)
 - [Query parameters](#query-parameters)
+- [Private repositories](#private-repositories)
 - [Deployment](#deployment)
 - [Run locally](#run-locally)
 - [Contributing](#contributing)
@@ -181,8 +182,38 @@ Custom colors override any theme: `bg`, `text`, `accent`, `card_bg`, `border`, `
 | `codeforces` | string | – | Codeforces handle (rating + rank) |
 | `codechef` | string | – | CodeChef username (rating, division, stars) |
 | `bg`, `text`, `accent`, `card_bg`, `border`, `sec_text`, `muted_text` | hex | – | Custom color overrides |
+| `user_key` | string | – | Opaque key that unlocks the connected account's private data. Added automatically by the studio |
 
 Competitive-programming handles are optional. The CP row is drawn only when at least two of LeetCode, Codeforces and CodeChef return data. A single handle is ignored rather than leaving a half-empty row.
+
+---
+
+## Private repositories
+
+By default cards only see public data. You can optionally let a card include **private repositories and private contributions** via GitHub OAuth — the same idea as the "Private Access" step in other stats engines.
+
+How it works:
+
+1. The studio generates a random `user_key` and stores it in your browser.
+2. "Connect GitHub" sends you through GitHub's OAuth consent screen. The server exchanges the code for a token and stores it — encrypted with `TOKEN_ENCRYPTION_KEY` and keyed by `user_key`.
+3. The studio appends `user_key` to the embed URL. When the card is rendered, the server loads the token and fetches your private repos and private contribution counts.
+
+Security model:
+
+- The token never reaches the browser or the card URL — only the opaque `user_key` does.
+- A `user_key` is only honored when the `username` in the URL matches the account that granted it, so a shared card URL can't expose a different user's private data.
+- Tokens are encrypted at rest (AES-256-GCM). Set a stable `TOKEN_ENCRYPTION_KEY`; rotating it invalidates existing connections.
+- Because GitHub classic OAuth has no read-only private-repo scope, connecting requests the `repo` scope. Disconnecting revokes the authorization on GitHub and deletes the token.
+
+Setup requires three environment variables plus storage (see below). Without them the feature stays hidden and the studio behaves exactly as before.
+
+```text
+GET /api/auth/status            # { enabled, persistent, encrypted }
+GET /api/auth/login?user_key=…  # redirect to GitHub
+GET /api/auth/callback          # OAuth redirect target
+GET /api/auth/session?user_key=… # { enabled, authenticated, login, privateAccess }
+POST /api/auth/logout?user_key=… # revoke + forget
+```
 
 ---
 
@@ -190,7 +221,7 @@ Competitive-programming handles are optional. The CP row is drawn only when at l
 
 The app is a small Express server that renders SVG on demand. It runs without a token: a public fallback fills contributions and streaks. A token improves accuracy (PRs, issues, reviews) and raises GitHub rate limits.
 
-зр### Vercel — API + demo, auto-deploy
+### Vercel — API + demo, auto-deploy
 
 1. Import the repo at [vercel.com/new](https://vercel.com/new). The included `vercel.json` serves the demo from `public/` and the API as a serverless function.
 2. In **Project → Settings → Environment Variables**, add `GITHUB_TOKEN` (create one [here](https://github.com/settings/tokens); no extra scopes needed for public data).
@@ -243,10 +274,14 @@ Copy [`.env.example`](.env.example). Every variable is optional.
 | `GITHUB_TOKEN` | – | Public-scope token. Higher rate limits and more accurate PR / issue / review stats. [Create one](https://github.com/settings/tokens) with no extra scopes |
 | `DEFAULT_USERNAME` | `vsmutok` | Used when `?username` is omitted |
 | `CACHE_MAX_SIZE` | `1000` | In-memory cache entries. TTL is 5 minutes in development and 30 minutes in production |
-| `MONGODB_URI` | – | Optional analytics. Omitted means analytics stay off |
+| `MONGODB_URI` | – | MongoDB connection. Enables analytics and persistent OAuth token storage |
 | `MONGODB_DB` | from the URI | Database name override |
 | `ANALYTICS_DISABLED` | – | Set to `true` to skip logging even when MongoDB is configured |
 | `ADMIN_API_KEY` | – | When set, `GET /api/cache/stats` requires this key. When unset, cache stats are public |
+| `GITHUB_OAUTH_CLIENT_ID` | – | OAuth App client ID. Enables private-repo access |
+| `GITHUB_OAUTH_CLIENT_SECRET` | – | OAuth App client secret |
+| `GITHUB_OAUTH_REDIRECT_URI` | – | Must match the OAuth App callback, e.g. `https://your-domain/api/auth/callback` |
+| `TOKEN_ENCRYPTION_KEY` | – | Long random secret used to encrypt stored tokens. Keep it stable (`openssl rand -hex 32`) |
 
 ### Scripts
 
@@ -268,6 +303,7 @@ Copy [`.env.example`](.env.example). Every variable is optional.
 | `GET /api/profile` | Dashboard SVG for a username |
 | `GET /api/profile/loading` | Loading spinner SVG (honors `theme` and color overrides) |
 | `GET /api/theme-preview/:theme` | Mock dashboard preview for a theme |
+| `GET /api/auth/*` | GitHub OAuth flow for private-repo access (see [Private repositories](#private-repositories)) |
 | `GET /health` | Liveness probe |
 | `GET /api/cache/stats` | Cache statistics. Protected when `ADMIN_API_KEY` is set |
 

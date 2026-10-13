@@ -14,7 +14,7 @@
   ],
   "crons": [
     {
-      "path": "/api/cron/warm-camo",
+      "path": "/api/cron",
       "schedule": "0 3 * * *"
     }
   ]

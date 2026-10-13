@@ -9,7 +9,7 @@ const router = Router();
  * Triggered by Vercel Cron; Vercel automatically sends
  * `Authorization: Bearer $CRON_SECRET` when CRON_SECRET is configured.
  */
-router.get('/warm-camo', async (req, res) => {
+router.get('/', async (req, res) => {
   const { secret, warmPages, warmHosts } = config.cron;
 
   if (secret) {

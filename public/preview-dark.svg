@@ -1,0 +1,477 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="960" height="660" viewBox="0 0 960 660" role="img" aria-labelledby="dashboard-title dashboard-desc" xml:lang="en" lang="en">
+<title id="dashboard-title">GitHub Dashboard</title>
+<desc id="dashboard-desc">GitHub profile statistics</desc>
+
+
+  <defs aria-hidden="true">
+    <!-- ambient card gradient -->
+    <linearGradient id="mainGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#58a6ff" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#3fb950" stop-opacity="0"/>
+    </linearGradient>
+
+    <!-- accent gradient (solid for flat themes) -->
+    <linearGradient id="accentGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#58a6ff"/>
+      <stop offset="100%" stop-color="#58a6ff"/>
+    </linearGradient>
+
+    <!-- vertical fill used by bars and medallions -->
+    <linearGradient id="barGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#58a6ff"/>
+      <stop offset="100%" stop-color="#58a6ff" stop-opacity="1"/>
+    </linearGradient>
+
+    <!-- soft top glow behind the header -->
+    <radialGradient id="headerGlow" cx="50%" cy="0%" r="75%">
+      <stop offset="0%" stop-color="#58a6ff" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#58a6ff" stop-opacity="0"/>
+    </radialGradient>
+
+    <filter id="softGlow" x="-100%" y="-100%" width="300%" height="300%">
+      <feGaussianBlur stdDeviation="4" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <g aria-hidden="true">
+  <!-- base background -->
+  <rect x="0" y="0" width="960" height="660" rx="16" ry="16" fill="#0d1117"/>
+
+  <!-- ambient wash -->
+  <rect x="0" y="0" width="960" height="660" rx="16" ry="16" fill="url(#mainGradient)"/>
+
+  <!-- soft header glow -->
+  <rect x="0" y="0" width="960" height="190" rx="16" ry="16" fill="url(#headerGlow)"/>
+
+  <!-- hairline border -->
+  <rect x="0.5" y="0.5" width="959" height="659" rx="16" ry="16" fill="none" stroke="#30363d" stroke-width="1" opacity="0.9"/>
+
+  <!-- watermark -->
+  
+</g>
+
+  <g>
+    
+      <clipPath id="avatarClip">
+        <circle cx="52" cy="44" r="24"/>
+      </clipPath>
+      <circle cx="52" cy="44" r="27" fill="#161b22" stroke="url(#accentGradient)" stroke-width="2"/>
+      <image href="data:image/jpeg;base64,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" x="28" y="20" width="48" height="48" clip-path="url(#avatarClip)" xlink:href="data:image/jpeg;base64,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"/>
+    <!-- name -->
+    <text x="92" y="52" font-family="'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="25" font-weight="700" fill="#f0f6fc" text-anchor="start">Vasyl Smutok's Dashboard</text>
+    <!-- accent underline -->
+    <rect x="92" y="61" width="42" height="3" rx="1.5" fill="url(#accentGradient)"/>
+    <text x="92" y="78" font-family="'SF Pro Text', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12.5" fill="#8b949e" text-anchor="start">@vsmutok</text>
+
+    <!-- branding -->
+    <text x="932" y="52" font-family="'SF Pro Text', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11" font-weight="500" fill="#8b949e" letter-spacing="0.2" text-anchor="end" opacity="0.6">vsmutok/github-metrics</text>
+
+    <!-- domain header decorations -->
+    
+  </g>
+
+  <g role="group" aria-labelledby="card-github-activity-28-95-title">
+    <!-- card background -->
+    <rect x="28" y="95" width="290.6666666666667" height="140" rx="12" ry="12" fill="#161b22"/>
+    <!-- ambient wash -->
+    <rect x="28" y="95" width="290.6666666666667" height="140" rx="12" ry="12" fill="url(#mainGradient)" opacity="0.35"/>
+    <!-- border -->
+    <rect x="28.5" y="95.5" width="289.6666666666667" height="139" rx="12" ry="12" fill="none" stroke="#30363d" stroke-width="1" opacity="0.6"/>
+    <!-- title accent -->
+    <rect x="46" y="113" width="3" height="12" rx="6" fill="url(#accentGradient)"/>
+    <!-- title -->
+    <text id="card-github-activity-28-95-title" x="56" y="122" font-family="'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11.5" font-weight="700" fill="#c9d1d9" letter-spacing="1.1">GITHUB ACTIVITY</text>
+
+    
+  <g role="group" aria-labelledby="lbl-contributions-48-180 val-contributions-48-180">
+    <rect x="48" y="142" width="16" height="3" rx="1.5" fill="#58a6ff"/>
+    <text id="val-contributions-48-180" x="48" y="180" font-family="'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="30" font-weight="800" fill="#f0f6fc">9.3k</text>
+    <text id="lbl-contributions-48-180" x="48" y="199" font-family="'SF Pro Text', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="10.5" font-weight="500" fill="#8b949e" letter-spacing="0.6">Contributions</text>
+    
+  </g>
+  <g role="group" aria-labelledby="lbl-prsopened-131.55555555555554-180 val-prsopened-131.55555555555554-180">
+    <rect x="131.55555555555554" y="142" width="16" height="3" rx="1.5" fill="#bc8cff"/>
+    <text id="val-prsopened-131.55555555555554-180" x="131.55555555555554" y="180" font-family="'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="30" font-weight="800" fill="#f0f6fc">99</text>
+    <text id="lbl-prsopened-131.55555555555554-180" x="131.55555555555554" y="199" font-family="'SF Pro Text', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="10.5" font-weight="500" fill="#8b949e" letter-spacing="0.6">PRs Opened</text>
+    
+  </g>
+  <g role="group" aria-labelledby="lbl-issuesopened-215.11111111111111-180 val-issuesopened-215.11111111111111-180">
+    <rect x="215.11111111111111" y="142" width="16" height="3" rx="1.5" fill="#3fb950"/>
+    <text id="val-issuesopened-215.11111111111111-180" x="215.11111111111111" y="180" font-family="'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="30" font-weight="800" fill="#f0f6fc">1</text>
+    <text id="lbl-issuesopened-215.11111111111111-180" x="215.11111111111111" y="199" font-family="'SF Pro Text', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="10.5" font-weight="500" fill="#8b949e" letter-spacing="0.6">Issues Opened</text>
+    
+  </g>
+
+    <!-- domain card decorations -->
+    
+  </g>
+
+  <g role="group" aria-labelledby="card-streak-stats-334.6666666666667-95-title">
+    <!-- card background -->
+    <rect x="334.6666666666667" y="95" width="290.6666666666667" height="140" rx="12" ry="12" fill="#161b22"/>
+    <!-- ambient wash -->
+    <rect x="334.6666666666667" y="95" width="290.6666666666667" height="140" rx="12" ry="12" fill="url(#mainGradient)" opacity="0.35"/>
+    <!-- border -->
+    <rect x="335.1666666666667" y="95.5" width="289.6666666666667" height="139" rx="12" ry="12" fill="none" stroke="#30363d" stroke-width="1" opacity="0.6"/>
+    <!-- title accent -->
+    <rect x="352.6666666666667" y="113" width="3" height="12" rx="6" fill="url(#accentGradient)"/>
+    <!-- title -->
+    <text id="card-streak-stats-334.6666666666667-95-title" x="362.6666666666667" y="122" font-family="'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11.5" font-weight="700" fill="#c9d1d9" letter-spacing="1.1">STREAK STATS</text>
+
+    
+  <g role="group" aria-labelledby="lbl-current-354.6666666666667-180 val-current-354.6666666666667-180">
+    <rect x="354.6666666666667" y="142" width="16" height="3" rx="1.5" fill="#58a6ff"/>
+    <text id="val-current-354.6666666666667-180" x="354.6666666666667" y="180" font-family="'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="30" font-weight="800" fill="#f0f6fc">47</text>
+    <text id="lbl-current-354.6666666666667-180" x="354.6666666666667" y="199" font-family="'SF Pro Text', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="10.5" font-weight="500" fill="#8b949e" letter-spacing="0.6">Current</text>
+    
+  </g>
+  <g role="group" aria-labelledby="lbl-longest-438.22222222222223-180 val-longest-438.22222222222223-180">
+    <rect x="438.22222222222223" y="142" width="16" height="3" rx="1.5" fill="#bc8cff"/>
+    <text id="val-longest-438.22222222222223-180" x="438.22222222222223" y="180" font-family="'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="30" font-weight="800" fill="#f0f6fc">170</text>
+    <text id="lbl-longest-438.22222222222223-180" x="438.22222222222223" y="199" font-family="'SF Pro Text', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="10.5" font-weight="500" fill="#8b949e" letter-spacing="0.6">Longest</text>
+    
+  </g>
+  <g role="group" aria-labelledby="lbl-total-521.7777777777778-180 val-total-521.7777777777778-180">
+    <rect x="521.7777777777778" y="142" width="16" height="3" rx="1.5" fill="#3fb950"/>
+    <text id="val-total-521.7777777777778-180" x="521.7777777777778" y="180" font-family="'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="30" font-weight="800" fill="#f0f6fc">1.3k</text>
+    <text id="lbl-total-521.7777777777778-180" x="521.7777777777778" y="199" font-family="'SF Pro Text', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="10.5" font-weight="500" fill="#8b949e" letter-spacing="0.6">Total</text>
+    
+  </g>
+
+    <!-- domain card decorations -->
+    
+  </g>
+
+  <g role="group" aria-labelledby="card-repository-stats-641.3333333333334-95-title">
+    <!-- card background -->
+    <rect x="641.3333333333334" y="95" width="290.6666666666667" height="140" rx="12" ry="12" fill="#161b22"/>
+    <!-- ambient wash -->
+    <rect x="641.3333333333334" y="95" width="290.6666666666667" height="140" rx="12" ry="12" fill="url(#mainGradient)" opacity="0.35"/>
+    <!-- border -->
+    <rect x="641.8333333333334" y="95.5" width="289.6666666666667" height="139" rx="12" ry="12" fill="none" stroke="#30363d" stroke-width="1" opacity="0.6"/>
+    <!-- title accent -->
+    <rect x="659.3333333333334" y="113" width="3" height="12" rx="6" fill="url(#accentGradient)"/>
+    <!-- title -->
+    <text id="card-repository-stats-641.3333333333334-95-title" x="669.3333333333334" y="122" font-family="'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11.5" font-weight="700" fill="#c9d1d9" letter-spacing="1.1">REPOSITORY STATS</text>
+
+    
+  <g role="group" aria-labelledby="lbl-repositories-661.3333333333334-180 val-repositories-661.3333333333334-180">
+    <rect x="661.3333333333334" y="142" width="16" height="3" rx="1.5" fill="#58a6ff"/>
+    <text id="val-repositories-661.3333333333334-180" x="661.3333333333334" y="180" font-family="'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="30" font-weight="800" fill="#f0f6fc">95</text>
+    <text id="lbl-repositories-661.3333333333334-180" x="661.3333333333334" y="199" font-family="'SF Pro Text', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="10.5" font-weight="500" fill="#8b949e" letter-spacing="0.6">Repositories</text>
+    
+  </g>
+  <g role="group" aria-labelledby="lbl-stars-744.8888888888889-180 val-stars-744.8888888888889-180">
+    <rect x="744.8888888888889" y="142" width="16" height="3" rx="1.5" fill="#bc8cff"/>
+    <text id="val-stars-744.8888888888889-180" x="744.8888888888889" y="180" font-family="'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="30" font-weight="800" fill="#f0f6fc">164</text>
+    <text id="lbl-stars-744.8888888888889-180" x="744.8888888888889" y="199" font-family="'SF Pro Text', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="10.5" font-weight="500" fill="#8b949e" letter-spacing="0.6">Stars</text>
+    
+  </g>
+  <g role="group" aria-labelledby="lbl-followers-828.4444444444445-180 val-followers-828.4444444444445-180">
+    <rect x="828.4444444444445" y="142" width="16" height="3" rx="1.5" fill="#3fb950"/>
+    <text id="val-followers-828.4444444444445-180" x="828.4444444444445" y="180" font-family="'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="30" font-weight="800" fill="#f0f6fc">33</text>
+    <text id="lbl-followers-828.4444444444445-180" x="828.4444444444445" y="199" font-family="'SF Pro Text', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="10.5" font-weight="500" fill="#8b949e" letter-spacing="0.6">Followers</text>
+    
+  </g>
+
+    <!-- domain card decorations -->
+    
+  </g>
+
+  <g role="group" aria-labelledby="contrib-title">
+  <title id="contrib-title">Contribution Activity</title>
+  <desc>Contribution activity chart showing 139 contributions over the displayed period with a peak of 11 contributions in a single day.</desc>
+    <!-- card background -->
+    <rect x="28" y="251" width="452" height="200" rx="12" ry="12" fill="#161b22"/>
+    <!-- ambient wash -->
+    <rect x="28" y="251" width="452" height="200" rx="12" ry="12" fill="url(#mainGradient)" opacity="0.35"/>
+    <!-- border -->
+    <rect x="28.5" y="251.5" width="451" height="199" rx="12" ry="12" fill="none" stroke="#30363d" stroke-width="1" opacity="0.6"/>
+    <!-- title accent -->
+    <rect x="46" y="269" width="3" height="12" rx="6" fill="url(#accentGradient)"/>
+    <!-- title -->
+    <text id="contrib-title" x="56" y="278" font-family="'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11.5" font-weight="700" fill="#c9d1d9" letter-spacing="1.1">CONTRIBUTION ACTIVITY</text>
+    <g transform="translate(48, 251)">
+      
+  <g transform="translate(0, 44)">
+    
+    <defs>
+      <linearGradient id="lineGradient-contrib" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#58a6ff"/>
+        <stop offset="50%" stop-color="#58a6ff"/>
+        <stop offset="100%" stop-color="#58a6ff"/>
+      </linearGradient>
+      <linearGradient id="areaGradient-contrib" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="#58a6ff" stop-opacity="0.4"/>
+        <stop offset="50%" stop-color="#bc8cff" stop-opacity="0.2"/>
+        <stop offset="100%" stop-color="#58a6ff" stop-opacity="0"/>
+      </linearGradient>
+      <filter id="lineGlow-contrib" x="-50%" y="-50%" width="200%" height="200%">
+        <feGaussianBlur stdDeviation="3" result="blur"/>
+        <feMerge>
+          <feMergeNode in="blur"/>
+          <feMergeNode in="SourceGraphic"/>
+        </feMerge>
+      </filter>
+    </defs>
+  
+    <line x1="12" y1="12" x2="400" y2="12" stroke="#30363d" stroke-width="1" opacity="0.3" stroke-dasharray="4 4"/>
+<line x1="12" y1="33.5" x2="400" y2="33.5" stroke="#30363d" stroke-width="1" opacity="0.3" stroke-dasharray="4 4"/>
+<line x1="12" y1="55" x2="400" y2="55" stroke="#30363d" stroke-width="1" opacity="0.3" stroke-dasharray="4 4"/>
+<line x1="12" y1="76.5" x2="400" y2="76.5" stroke="#30363d" stroke-width="1" opacity="0.3" stroke-dasharray="4 4"/>
+<line x1="12" y1="98" x2="400" y2="98" stroke="#30363d" stroke-width="1" opacity="0.3" stroke-dasharray="4 4"/>
+    <line x1="12" y1="98" x2="400" y2="98" stroke="#21262d" stroke-width="1.2" opacity="0.7"/>
+    <line x1="12" y1="12" x2="12" y2="98" stroke="#21262d" stroke-width="1.2" opacity="0.7"/>
+    <line x1="8" y1="12" x2="12" y2="12" stroke="#c9d1d9" stroke-width="1" opacity="0.7"/>
+    <text x="4" y="15" font-family="'SF Pro Text', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="8.5" fill="#8b949e" text-anchor="end">11</text>
+    <line x1="8" y1="33.5" x2="12" y2="33.5" stroke="#c9d1d9" stroke-width="1" opacity="0.7"/>
+    <text x="4" y="36.5" font-family="'SF Pro Text', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="8.5" fill="#8b949e" text-anchor="end">9</text>
+    <line x1="8" y1="55" x2="12" y2="55" stroke="#c9d1d9" stroke-width="1" opacity="0.7"/>
+    <text x="4" y="58" font-family="'SF Pro Text', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="8.5" fill="#8b949e" text-anchor="end">6</text>
+    <line x1="8" y1="76.5" x2="12" y2="76.5" stroke="#c9d1d9" stroke-width="1" opacity="0.7"/>
+    <text x="4" y="79.5" font-family="'SF Pro Text', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="8.5" fill="#8b949e" text-anchor="end">4</text>
+    <line x1="8" y1="98" x2="12" y2="98" stroke="#c9d1d9" stroke-width="1" opacity="0.7"/>
+    <text x="4" y="101" font-family="'SF Pro Text', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="8.5" fill="#8b949e" text-anchor="end">1</text>
+    <line x1="12" y1="98" x2="12" y2="102" stroke="#c9d1d9" stroke-width="1" opacity="0.7"/>
+    <text x="12" y="112" font-family="'SF Pro Text', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="8.5" fill="#8b949e" text-anchor="middle">Sep 15</text>
+    <line x1="206" y1="98" x2="206" y2="102" stroke="#c9d1d9" stroke-width="1" opacity="0.7"/>
+    <text x="206" y="112" font-family="'SF Pro Text', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="8.5" fill="#8b949e" text-anchor="middle">Sep 29</text>
+    <line x1="400" y1="98" x2="400" y2="102" stroke="#c9d1d9" stroke-width="1" opacity="0.7"/>
+    <text x="400" y="112" font-family="'SF Pro Text', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="8.5" fill="#8b949e" text-anchor="middle">Oct 14</text>
+    <text x="206" y="132" font-family="'SF Pro Text', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="9" fill="#c9d1d9" text-anchor="middle">Timeline (last 30 days)</text>
+    <text x="-24" y="55" font-family="'SF Pro Text', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="9" fill="#c9d1d9" text-anchor="middle" transform="rotate(-90, -24, 55)">Contributions</text>
+    <path d="M 12 98 C 16.013793103448275 87.68, 17.351724137931036 71.34, 25.379310344827587 63.6 C 33.40689655172414 55.86, 30.731034482758623 61.88, 38.758620689655174 72.2 C 46.786206896551725 82.52, 44.11034482758621 95.42, 52.13793103448276 98 C 60.16551724137931 100.58, 57.4896551724138 93.7, 65.51724137931035 80.8 C 73.5448275862069 67.89999999999999, 70.86896551724138 49.839999999999996, 78.89655172413794 55 C 86.9241379310345 60.160000000000004, 84.24827586206897 103.16, 92.27586206896552 98 C 100.30344827586208 92.84, 97.62758620689657 40.38, 105.65517241379311 37.800000000000004 C 113.68275862068965 35.220000000000006, 111.00689655172413 76.50000000000001, 119.03448275862068 89.4 C 127.06206896551724 102.3, 124.38620689655173 80.8, 132.41379310344828 80.8 C 140.44137931034484 80.8, 137.7655172413793 86.82000000000001, 145.79310344827587 89.4 C 153.82068965517243 91.98, 151.14482758620687 91.98, 159.17241379310343 89.4 C 167.2 86.82000000000001, 164.5241379310345 88.53999999999999, 172.55172413793105 80.8 C 180.5793103448276 73.06, 177.90344827586208 66.18, 185.93103448275863 63.6 C 193.9586206896552 61.02, 191.28275862068966 74.78, 199.31034482758622 72.2 C 207.33793103448278 69.62, 204.66206896551728 60.160000000000004, 212.6896551724138 55 C 220.71724137931034 49.839999999999996, 218.04137931034484 52.42, 226.06896551724137 55 C 234.0965517241379 57.58, 231.4206896551724 53.28, 239.44827586206895 63.6 C 247.4758620689655 73.92, 244.8 89.4, 252.82758620689657 89.4 C 260.8551724137931 89.4, 258.17931034482757 66.18, 266.2068965517241 63.6 C 274.2344827586207 61.019999999999996, 271.5586206896552 88.53999999999999, 279.58620689655174 80.8 C 287.6137931034483 73.06, 284.93793103448274 45.540000000000006, 292.9655172413793 37.800000000000004 C 300.99310344827586 30.060000000000006, 298.3172413793103 57.58, 306.34482758620686 55 C 314.3724137931034 52.42, 311.6965517241379 26.62, 319.7241379310345 29.200000000000003 C 327.75172413793103 31.780000000000005, 325.07586206896553 58.440000000000005, 333.1034482758621 63.6 C 341.13103448275865 68.76, 338.4551724137931 41.24, 346.48275862068965 46.4 C 354.5103448275862 51.559999999999995, 351.8344827586207 91.11999999999999, 359.86206896551727 80.8 C 367.8896551724138 70.48, 365.21379310344827 19.74, 373.2413793103448 12 C 381.2689655172414 4.260000000000002, 378.5931034482759 44.68, 386.62068965517244 55 C 394.648275862069 65.32, 395.9862068965517 48.98, 400 46.4" fill="none" stroke="url(#lineGradient-contrib)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+    
+      <circle cx="400" cy="46.4" r="6" fill="#3fb950" opacity="0.3"/>
+      <circle cx="400" cy="46.4" r="4" fill="#3fb950"/>
+      <circle cx="400" cy="46.4" r="2" fill="#fff" opacity="0.9"/>
+    
+  </g>
+    </g>
+  </g>
+
+  <g role="group" aria-labelledby="language-title">
+  <title id="language-title">Top Languages</title>
+  <desc>Python 90%, Jupyter Notebook 5%, HTML 2%, MDX 2%, JavaScript 2%</desc>
+    <!-- card background -->
+    <rect x="496" y="251" width="436" height="200" rx="12" ry="12" fill="#161b22"/>
+    <!-- ambient wash -->
+    <rect x="496" y="251" width="436" height="200" rx="12" ry="12" fill="url(#mainGradient)" opacity="0.35"/>
+    <!-- border -->
+    <rect x="496.5" y="251.5" width="435" height="199" rx="12" ry="12" fill="none" stroke="#30363d" stroke-width="1" opacity="0.6"/>
+    <!-- title accent -->
+    <rect x="514" y="269" width="3" height="12" rx="6" fill="url(#accentGradient)"/>
+    <!-- title -->
+    <text id="language-title" x="524" y="278" font-family="'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11.5" font-weight="700" fill="#c9d1d9" letter-spacing="1.1">TOP LANGUAGES</text>
+    <path d="M 609.3897255123522 302.0274479413118 A 61 61 0 1 1 571.2265472076758 314.0012223806761 L 585.033259268759 332.6207578760192 A 37.82 37.82 0 1 0 608.6944298176584 325.19701772361327 Z" fill="#58a6ff" opacity="0.2" filter="url(#softGlow)"/>
+    <path d="M 609.3897255123522 302.0274479413118 A 61 61 0 1 1 571.2265472076758 314.0012223806761 L 585.033259268759 332.6207578760192 A 37.82 37.82 0 1 0 608.6944298176584 325.19701772361327 Z" fill="#58a6ff"/>
+    <path d="M 574.2300908236418 311.9106943255664 A 61 61 0 0 1 587.5612534602834 305.3714468614717 L 595.1607771453757 327.27029705411246 A 37.82 37.82 0 0 0 586.8954563106579 331.32463048185116 Z" fill="#bc8cff" opacity="0.2" filter="url(#softGlow)"/>
+    <path d="M 574.2300908236418 311.9106943255664 A 61 61 0 0 1 587.5612534602834 305.3714468614717 L 595.1607771453757 327.27029705411246 A 37.82 37.82 0 0 0 586.8954563106579 331.32463048185116 Z" fill="#bc8cff"/>
+    <path d="M 591.0528793398274 304.27594217434813 A 61 61 0 0 1 593.4940445809347 303.6438807017434 L 598.8391076401795 326.1992060350809 A 37.82 37.82 0 0 0 597.325585190693 326.59108414809583 Z" fill="#3fb950" opacity="0.2" filter="url(#softGlow)"/>
+    <path d="M 591.0528793398274 304.27594217434813 A 61 61 0 0 1 593.4940445809347 303.6438807017434 L 598.8391076401795 326.1992060350809 A 37.82 37.82 0 0 0 597.325585190693 326.59108414809583 Z" fill="#3fb950"/>
+    <path d="M 597.0785864281798 302.90723862613345 A 61 61 0 0 1 599.5711714384644 302.52538864767797 L 602.6069262918479 325.5057409615604 A 37.82 37.82 0 0 0 601.0615235854715 325.7424879482028 Z" fill="#d29922" opacity="0.2" filter="url(#softGlow)"/>
+    <path d="M 597.0785864281798 302.90723862613345 A 61 61 0 0 1 599.5711714384644 302.52538864767797 L 602.6069262918479 325.5057409615604 A 37.82 37.82 0 0 0 601.0615235854715 325.7424879482028 Z" fill="#d29922"/>
+    <path d="M 603.2118470033979 302.1551681281135 A 61 61 0 0 1 605.7302744876478 302.0274479413118 L 606.4255701823416 325.19701772361327 A 37.82 37.82 0 0 0 604.8641451421067 325.27620423943034 Z" fill="#f85149" opacity="0.2" filter="url(#softGlow)"/>
+    <path d="M 603.2118470033979 302.1551681281135 A 61 61 0 0 1 605.7302744876478 302.0274479413118 L 606.4255701823416 325.19701772361327 A 37.82 37.82 0 0 0 604.8641451421067 325.27620423943034 Z" fill="#f85149"/>
+    
+    <circle cx="607.56" cy="363" r="33.82" fill="#161b22" opacity="0.9"/>
+    <circle cx="607.56" cy="363" r="29.82" fill="url(#mainGradient)" opacity="0.5"/>
+    <text x="607.56" y="367" font-family="'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="16" font-weight="700" fill="#f0f6fc" text-anchor="middle">62</text>
+    <text x="607.56" y="381" font-family="'SF Pro Text', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="9" fill="#8b949e" text-anchor="middle">REPOS</text>
+    
+      <g>
+        <circle cx="717.12" cy="315" r="4" fill="#58a6ff"/>
+        <text x="729.12" y="319" font-family="'SF Pro Text', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" fill="#f0f6fc">Python</text>
+        <text x="908" y="319" font-family="'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11" font-weight="600" fill="#58a6ff" text-anchor="end">90%</text>
+      </g>
+      <g>
+        <circle cx="717.12" cy="343" r="4" fill="#bc8cff"/>
+        <text x="729.12" y="347" font-family="'SF Pro Text', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" fill="#f0f6fc">Jupyter Notebook</text>
+        <text x="908" y="347" font-family="'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11" font-weight="600" fill="#bc8cff" text-anchor="end">5%</text>
+      </g>
+      <g>
+        <circle cx="717.12" cy="371" r="4" fill="#3fb950"/>
+        <text x="729.12" y="375" font-family="'SF Pro Text', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" fill="#f0f6fc">HTML</text>
+        <text x="908" y="375" font-family="'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11" font-weight="600" fill="#3fb950" text-anchor="end">2%</text>
+      </g>
+      <g>
+        <circle cx="717.12" cy="399" r="4" fill="#d29922"/>
+        <text x="729.12" y="403" font-family="'SF Pro Text', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" fill="#f0f6fc">MDX</text>
+        <text x="908" y="403" font-family="'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11" font-weight="600" fill="#d29922" text-anchor="end">2%</text>
+      </g>
+      <g>
+        <circle cx="717.12" cy="427" r="4" fill="#f85149"/>
+        <text x="729.12" y="431" font-family="'SF Pro Text', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" fill="#f0f6fc">JavaScript</text>
+        <text x="908" y="431" font-family="'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11" font-weight="600" fill="#f85149" text-anchor="end">2%</text>
+      </g>
+  </g>
+
+  <g role="group" aria-labelledby="trophy-title">
+  <title id="trophy-title">Achievement Trophies</title>
+  <desc>Achievements: 9325 commits, 99 pull requests, 1302 reviews, 1 issues, 95 repositories, 164 stars, 33 followers, 84 open source contributions, 68 forked repositories, 1 discussions.</desc>
+    <!-- card background -->
+    <rect x="28" y="467" width="904" height="165" rx="12" ry="12" fill="#161b22"/>
+    <!-- ambient wash -->
+    <rect x="28" y="467" width="904" height="165" rx="12" ry="12" fill="url(#mainGradient)" opacity="0.3"/>
+    <!-- border -->
+    <rect x="28.5" y="467.5" width="903" height="164" rx="12" ry="12" fill="none" stroke="#30363d" stroke-width="1" opacity="0.6"/>
+    <!-- title accent -->
+    <rect x="464" y="478" width="32" height="3" rx="1.5" fill="url(#accentGradient)"/>
+    <!-- title -->
+    <text id="trophy-title" x="480" y="493" font-family="'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="11.5" font-weight="700" fill="#c9d1d9" letter-spacing="1.1" text-anchor="middle">ACHIEVEMENT TROPHIES</text>
+  </g>
+  <g>
+    <polygon points="93,520.25 118.76425576258706,535.125 118.76425576258706,564.875 93,579.75 67.23574423741296,564.875 67.23574423741294,535.125" fill="#ffd700" opacity="0.24" filter="url(#softGlow)"/>
+    <polygon points="93,520.25 118.76425576258706,535.125 118.76425576258706,564.875 93,579.75 67.23574423741296,564.875 67.23574423741294,535.125" fill="#161b22"/>
+    <polygon points="93,520.25 118.76425576258706,535.125 118.76425576258706,564.875 93,579.75 67.23574423741296,564.875 67.23574423741294,535.125" fill="url(#mainGradient)" opacity="0.4"/>
+    <polygon points="93,520.25 118.76425576258706,535.125 118.76425576258706,564.875 93,579.75 67.23574423741296,564.875 67.23574423741294,535.125" fill="none" stroke="#ffd700" stroke-width="2" opacity="0.8"/>
+    <polygon points="93,523.75 115.73316684934152,536.875 115.73316684934152,563.125 93,576.25 70.26683315065848,563.125 70.26683315065847,536.875" fill="none" stroke="#ffd700" stroke-width="1" opacity="0.3"/>
+    <g transform="translate(81, 536)" fill="none" stroke="#ffd700" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="3.6"/><line x1="2" y1="12" x2="8.4" y2="12"/><line x1="15.6" y1="12" x2="22" y2="12"/>
+    </g>
+    <circle cx="120" cy="527" r="9" fill="#ffd700" stroke="#0d1117" stroke-width="2"/>
+    <text x="120" y="531" font-family="'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="9.5" font-weight="800" fill="#0d1117" text-anchor="middle">S</text>
+    <text x="93" y="602" font-family="'SF Pro Text', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="10" font-weight="600" fill="#c9d1d9" text-anchor="middle">Commits</text>
+    <text x="93" y="617" font-family="'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="800" fill="#f0f6fc" text-anchor="middle">9.3k</text>
+  </g>
+
+  <g>
+    <polygon points="179,520.25 204.76425576258706,535.125 204.76425576258706,564.875 179,579.75 153.23574423741294,564.875 153.23574423741294,535.125" fill="#3b82f6" opacity="0.12" filter="url(#softGlow)"/>
+    <polygon points="179,520.25 204.76425576258706,535.125 204.76425576258706,564.875 179,579.75 153.23574423741294,564.875 153.23574423741294,535.125" fill="#161b22"/>
+    <polygon points="179,520.25 204.76425576258706,535.125 204.76425576258706,564.875 179,579.75 153.23574423741294,564.875 153.23574423741294,535.125" fill="url(#mainGradient)" opacity="0.4"/>
+    <polygon points="179,520.25 204.76425576258706,535.125 204.76425576258706,564.875 179,579.75 153.23574423741294,564.875 153.23574423741294,535.125" fill="none" stroke="#3b82f6" stroke-width="2" opacity="0.8"/>
+    <polygon points="179,523.75 201.7331668493415,536.875 201.7331668493415,563.125 179,576.25 156.2668331506585,563.125 156.26683315065847,536.875" fill="none" stroke="#3b82f6" stroke-width="1" opacity="0.3"/>
+    <g transform="translate(167, 536)" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="6" cy="18" r="2.6"/><circle cx="6" cy="6" r="2.6"/><circle cx="18" cy="6" r="2.6"/><line x1="6" y1="8.6" x2="6" y2="15.4"/><path d="M18 8.6v3.9a3.5 3.5 0 0 1-3.5 3.5H11"/>
+    </g>
+    <circle cx="206" cy="527" r="9" fill="#3b82f6" stroke="#0d1117" stroke-width="2"/>
+    <text x="206" y="531" font-family="'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="9.5" font-weight="800" fill="#0d1117" text-anchor="middle">B</text>
+    <text x="179" y="602" font-family="'SF Pro Text', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="10" font-weight="600" fill="#c9d1d9" text-anchor="middle">PRs</text>
+    <text x="179" y="617" font-family="'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="800" fill="#f0f6fc" text-anchor="middle">99</text>
+  </g>
+
+  <g>
+    <polygon points="265,520.25 290.764255762587,535.125 290.764255762587,564.875 265,579.75 239.23574423741294,564.875 239.23574423741294,535.125" fill="#ffd700" opacity="0.24" filter="url(#softGlow)"/>
+    <polygon points="265,520.25 290.764255762587,535.125 290.764255762587,564.875 265,579.75 239.23574423741294,564.875 239.23574423741294,535.125" fill="#161b22"/>
+    <polygon points="265,520.25 290.764255762587,535.125 290.764255762587,564.875 265,579.75 239.23574423741294,564.875 239.23574423741294,535.125" fill="url(#mainGradient)" opacity="0.4"/>
+    <polygon points="265,520.25 290.764255762587,535.125 290.764255762587,564.875 265,579.75 239.23574423741294,564.875 239.23574423741294,535.125" fill="none" stroke="#ffd700" stroke-width="2" opacity="0.8"/>
+    <polygon points="265,523.75 287.7331668493415,536.875 287.7331668493415,563.125 265,576.25 242.2668331506585,563.125 242.26683315065847,536.875" fill="none" stroke="#ffd700" stroke-width="1" opacity="0.3"/>
+    <g transform="translate(253, 536)" fill="none" stroke="#ffd700" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M21.5 11.5V12a9.5 9.5 0 1 1-5.6-8.7"/><polyline points="22 4.5 12 14.5 9 11.5"/>
+    </g>
+    <circle cx="292" cy="527" r="9" fill="#ffd700" stroke="#0d1117" stroke-width="2"/>
+    <text x="292" y="531" font-family="'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="9.5" font-weight="800" fill="#0d1117" text-anchor="middle">S</text>
+    <text x="265" y="602" font-family="'SF Pro Text', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="10" font-weight="600" fill="#c9d1d9" text-anchor="middle">Reviews</text>
+    <text x="265" y="617" font-family="'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="800" fill="#f0f6fc" text-anchor="middle">1.3k</text>
+  </g>
+
+  <g>
+    <polygon points="351,520.25 376.764255762587,535.125 376.764255762587,564.875 351,579.75 325.235744237413,564.875 325.2357442374129,535.125" fill="#64748b" opacity="0.03" filter="url(#softGlow)"/>
+    <polygon points="351,520.25 376.764255762587,535.125 376.764255762587,564.875 351,579.75 325.235744237413,564.875 325.2357442374129,535.125" fill="#161b22"/>
+    <polygon points="351,520.25 376.764255762587,535.125 376.764255762587,564.875 351,579.75 325.235744237413,564.875 325.2357442374129,535.125" fill="url(#mainGradient)" opacity="0.4"/>
+    <polygon points="351,520.25 376.764255762587,535.125 376.764255762587,564.875 351,579.75 325.235744237413,564.875 325.2357442374129,535.125" fill="none" stroke="#64748b" stroke-width="2" opacity="0.8"/>
+    <polygon points="351,523.75 373.7331668493415,536.875 373.7331668493415,563.125 351,576.25 328.2668331506585,563.125 328.2668331506585,536.875" fill="none" stroke="#64748b" stroke-width="1" opacity="0.3"/>
+    <g transform="translate(339, 536)" fill="none" stroke="#64748b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="9"/><line x1="12" y1="7.8" x2="12" y2="12.5"/><line x1="12" y1="16.2" x2="12.01" y2="16.2"/>
+    </g>
+    <circle cx="378" cy="527" r="9" fill="#64748b" stroke="#0d1117" stroke-width="2"/>
+    <text x="378" y="531" font-family="'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="9.5" font-weight="800" fill="#0d1117" text-anchor="middle">D</text>
+    <text x="351" y="602" font-family="'SF Pro Text', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="10" font-weight="600" fill="#c9d1d9" text-anchor="middle">Issues</text>
+    <text x="351" y="617" font-family="'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="800" fill="#f0f6fc" text-anchor="middle">1</text>
+  </g>
+
+  <g>
+    <polygon points="437,520.25 462.764255762587,535.125 462.764255762587,564.875 437,579.75 411.235744237413,564.875 411.2357442374129,535.125" fill="#a855f7" opacity="0.18" filter="url(#softGlow)"/>
+    <polygon points="437,520.25 462.764255762587,535.125 462.764255762587,564.875 437,579.75 411.235744237413,564.875 411.2357442374129,535.125" fill="#161b22"/>
+    <polygon points="437,520.25 462.764255762587,535.125 462.764255762587,564.875 437,579.75 411.235744237413,564.875 411.2357442374129,535.125" fill="url(#mainGradient)" opacity="0.4"/>
+    <polygon points="437,520.25 462.764255762587,535.125 462.764255762587,564.875 437,579.75 411.235744237413,564.875 411.2357442374129,535.125" fill="none" stroke="#a855f7" stroke-width="2" opacity="0.8"/>
+    <polygon points="437,523.75 459.7331668493415,536.875 459.7331668493415,563.125 437,576.25 414.2668331506585,563.125 414.2668331506585,536.875" fill="none" stroke="#a855f7" stroke-width="1" opacity="0.3"/>
+    <g transform="translate(425, 536)" fill="none" stroke="#a855f7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+    </g>
+    <circle cx="464" cy="527" r="9" fill="#a855f7" stroke="#0d1117" stroke-width="2"/>
+    <text x="464" y="531" font-family="'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="9.5" font-weight="800" fill="#0d1117" text-anchor="middle">A</text>
+    <text x="437" y="602" font-family="'SF Pro Text', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="10" font-weight="600" fill="#c9d1d9" text-anchor="middle">Repos</text>
+    <text x="437" y="617" font-family="'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="800" fill="#f0f6fc" text-anchor="middle">95</text>
+  </g>
+
+  <g>
+    <polygon points="523,520.25 548.764255762587,535.125 548.764255762587,564.875 523,579.75 497.235744237413,564.875 497.2357442374129,535.125" fill="#3b82f6" opacity="0.12" filter="url(#softGlow)"/>
+    <polygon points="523,520.25 548.764255762587,535.125 548.764255762587,564.875 523,579.75 497.235744237413,564.875 497.2357442374129,535.125" fill="#161b22"/>
+    <polygon points="523,520.25 548.764255762587,535.125 548.764255762587,564.875 523,579.75 497.235744237413,564.875 497.2357442374129,535.125" fill="url(#mainGradient)" opacity="0.4"/>
+    <polygon points="523,520.25 548.764255762587,535.125 548.764255762587,564.875 523,579.75 497.235744237413,564.875 497.2357442374129,535.125" fill="none" stroke="#3b82f6" stroke-width="2" opacity="0.8"/>
+    <polygon points="523,523.75 545.7331668493415,536.875 545.7331668493415,563.125 523,576.25 500.2668331506585,563.125 500.2668331506585,536.875" fill="none" stroke="#3b82f6" stroke-width="1" opacity="0.3"/>
+    <g transform="translate(511, 536)" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <polygon points="12 2.6 15 8.7 21.7 9.6 16.9 14.3 18 21 12 17.8 6 21 7.1 14.3 2.3 9.6 9 8.7 12 2.6"/>
+    </g>
+    <circle cx="550" cy="527" r="9" fill="#3b82f6" stroke="#0d1117" stroke-width="2"/>
+    <text x="550" y="531" font-family="'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="9.5" font-weight="800" fill="#0d1117" text-anchor="middle">B</text>
+    <text x="523" y="602" font-family="'SF Pro Text', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="10" font-weight="600" fill="#c9d1d9" text-anchor="middle">Stars</text>
+    <text x="523" y="617" font-family="'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="800" fill="#f0f6fc" text-anchor="middle">164</text>
+  </g>
+
+  <g>
+    <polygon points="609,520.25 634.764255762587,535.125 634.764255762587,564.875 609,579.75 583.235744237413,564.875 583.235744237413,535.125" fill="#10b981" opacity="0.075" filter="url(#softGlow)"/>
+    <polygon points="609,520.25 634.764255762587,535.125 634.764255762587,564.875 609,579.75 583.235744237413,564.875 583.235744237413,535.125" fill="#161b22"/>
+    <polygon points="609,520.25 634.764255762587,535.125 634.764255762587,564.875 609,579.75 583.235744237413,564.875 583.235744237413,535.125" fill="url(#mainGradient)" opacity="0.4"/>
+    <polygon points="609,520.25 634.764255762587,535.125 634.764255762587,564.875 609,579.75 583.235744237413,564.875 583.235744237413,535.125" fill="none" stroke="#10b981" stroke-width="2" opacity="0.8"/>
+    <polygon points="609,523.75 631.7331668493415,536.875 631.7331668493415,563.125 609,576.25 586.2668331506585,563.125 586.2668331506585,536.875" fill="none" stroke="#10b981" stroke-width="1" opacity="0.3"/>
+    <g transform="translate(597, 536)" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M16 20v-1.5a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4V20"/><circle cx="9" cy="7.2" r="3.4"/><path d="M22 20v-1.5a4 4 0 0 0-3-3.87"/><path d="M15.5 3.8a3.4 3.4 0 0 1 0 6.7"/>
+    </g>
+    <circle cx="636" cy="527" r="9" fill="#10b981" stroke="#0d1117" stroke-width="2"/>
+    <text x="636" y="531" font-family="'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="9.5" font-weight="800" fill="#0d1117" text-anchor="middle">C</text>
+    <text x="609" y="602" font-family="'SF Pro Text', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="10" font-weight="600" fill="#c9d1d9" text-anchor="middle">Followers</text>
+    <text x="609" y="617" font-family="'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="800" fill="#f0f6fc" text-anchor="middle">33</text>
+  </g>
+
+  <g>
+    <polygon points="695,520.25 720.764255762587,535.125 720.764255762587,564.875 695,579.75 669.235744237413,564.875 669.235744237413,535.125" fill="#a855f7" opacity="0.18" filter="url(#softGlow)"/>
+    <polygon points="695,520.25 720.764255762587,535.125 720.764255762587,564.875 695,579.75 669.235744237413,564.875 669.235744237413,535.125" fill="#161b22"/>
+    <polygon points="695,520.25 720.764255762587,535.125 720.764255762587,564.875 695,579.75 669.235744237413,564.875 669.235744237413,535.125" fill="url(#mainGradient)" opacity="0.4"/>
+    <polygon points="695,520.25 720.764255762587,535.125 720.764255762587,564.875 695,579.75 669.235744237413,564.875 669.235744237413,535.125" fill="none" stroke="#a855f7" stroke-width="2" opacity="0.8"/>
+    <polygon points="695,523.75 717.7331668493415,536.875 717.7331668493415,563.125 695,576.25 672.2668331506585,563.125 672.2668331506585,536.875" fill="none" stroke="#a855f7" stroke-width="1" opacity="0.3"/>
+    <g transform="translate(683, 536)" fill="none" stroke="#a855f7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="9.4"/><line x1="2.6" y1="12" x2="21.4" y2="12"/><path d="M12 2.6c2.4 2.6 3.8 5.9 3.8 9.4S14.4 18.8 12 21.4c-2.4-2.6-3.8-5.9-3.8-9.4S9.6 5.2 12 2.6z"/>
+    </g>
+    <circle cx="722" cy="527" r="9" fill="#a855f7" stroke="#0d1117" stroke-width="2"/>
+    <text x="722" y="531" font-family="'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="9.5" font-weight="800" fill="#0d1117" text-anchor="middle">A</text>
+    <text x="695" y="602" font-family="'SF Pro Text', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="10" font-weight="600" fill="#c9d1d9" text-anchor="middle">Impact</text>
+    <text x="695" y="617" font-family="'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="800" fill="#f0f6fc" text-anchor="middle">84</text>
+  </g>
+
+  <g>
+    <polygon points="781,520.25 806.764255762587,535.125 806.764255762587,564.875 781,579.75 755.235744237413,564.875 755.235744237413,535.125" fill="#a855f7" opacity="0.18" filter="url(#softGlow)"/>
+    <polygon points="781,520.25 806.764255762587,535.125 806.764255762587,564.875 781,579.75 755.235744237413,564.875 755.235744237413,535.125" fill="#161b22"/>
+    <polygon points="781,520.25 806.764255762587,535.125 806.764255762587,564.875 781,579.75 755.235744237413,564.875 755.235744237413,535.125" fill="url(#mainGradient)" opacity="0.4"/>
+    <polygon points="781,520.25 806.764255762587,535.125 806.764255762587,564.875 781,579.75 755.235744237413,564.875 755.235744237413,535.125" fill="none" stroke="#a855f7" stroke-width="2" opacity="0.8"/>
+    <polygon points="781,523.75 803.7331668493415,536.875 803.7331668493415,563.125 781,576.25 758.2668331506585,563.125 758.2668331506585,536.875" fill="none" stroke="#a855f7" stroke-width="1" opacity="0.3"/>
+    <g transform="translate(769, 536)" fill="none" stroke="#a855f7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="6" cy="18" r="2.6"/><circle cx="6" cy="6" r="2.6"/><circle cx="18" cy="6" r="2.6"/><line x1="6" y1="8.6" x2="6" y2="15.4"/><path d="M18 8.6a9 9 0 0 1-9 9"/>
+    </g>
+    <circle cx="808" cy="527" r="9" fill="#a855f7" stroke="#0d1117" stroke-width="2"/>
+    <text x="808" y="531" font-family="'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="9.5" font-weight="800" fill="#0d1117" text-anchor="middle">A</text>
+    <text x="781" y="602" font-family="'SF Pro Text', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="10" font-weight="600" fill="#c9d1d9" text-anchor="middle">Forked</text>
+    <text x="781" y="617" font-family="'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="800" fill="#f0f6fc" text-anchor="middle">68</text>
+  </g>
+
+  <g>
+    <polygon points="867,520.25 892.764255762587,535.125 892.764255762587,564.875 867,579.75 841.235744237413,564.875 841.235744237413,535.125" fill="#64748b" opacity="0.03" filter="url(#softGlow)"/>
+    <polygon points="867,520.25 892.764255762587,535.125 892.764255762587,564.875 867,579.75 841.235744237413,564.875 841.235744237413,535.125" fill="#161b22"/>
+    <polygon points="867,520.25 892.764255762587,535.125 892.764255762587,564.875 867,579.75 841.235744237413,564.875 841.235744237413,535.125" fill="url(#mainGradient)" opacity="0.4"/>
+    <polygon points="867,520.25 892.764255762587,535.125 892.764255762587,564.875 867,579.75 841.235744237413,564.875 841.235744237413,535.125" fill="none" stroke="#64748b" stroke-width="2" opacity="0.8"/>
+    <polygon points="867,523.75 889.7331668493415,536.875 889.7331668493415,563.125 867,576.25 844.2668331506585,563.125 844.2668331506585,536.875" fill="none" stroke="#64748b" stroke-width="1" opacity="0.3"/>
+    <g transform="translate(855, 536)" fill="none" stroke="#64748b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.4 8.4 0 0 1 3.8-.9h.5a8.5 8.5 0 0 1 8 8v.5z"/>
+    </g>
+    <circle cx="894" cy="527" r="9" fill="#64748b" stroke="#0d1117" stroke-width="2"/>
+    <text x="894" y="531" font-family="'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="9.5" font-weight="800" fill="#0d1117" text-anchor="middle">D</text>
+    <text x="867" y="602" font-family="'SF Pro Text', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="10" font-weight="600" fill="#c9d1d9" text-anchor="middle">Discussions</text>
+    <text x="867" y="617" font-family="'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="13" font-weight="800" fill="#f0f6fc" text-anchor="middle">1</text>
+  </g>
+</svg>

@@ -1,6 +1,10 @@
 <p align="center">
   <a href="https://ghmetric.vercel.app/">
-    <img src="./public/preview.png" alt="github-metrics profile card — activity, streak, languages and trophies" width="880">
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset="./public/preview-dark.svg">
+      <source media="(prefers-color-scheme: light)" srcset="./public/preview-light.svg">
+      <img src="./public/preview-dark.svg" alt="github-metrics profile card — activity, streak, languages and trophies" width="880">
+    </picture>
   </a>
 </p>
 

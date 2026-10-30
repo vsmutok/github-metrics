@@ -14,6 +14,10 @@
 </p>
 
 <p align="center">
+  <sub><strong>Derived from <a href="https://github.com/SamXop123/samdev-pulse">samdev-pulse</a></strong> — the original project by SamXop123. Read <a href="#credits--attribution">Credits &amp; attribution</a>.</sub>
+</p>
+
+<p align="center">
   <a href="https://ghmetric.vercel.app/"><img src="https://img.shields.io/badge/demo-live-2ea44f?style=flat-square" alt="Live demo"></a>
   <img src="https://img.shields.io/badge/node-%3E%3D20-339933?style=flat-square&logo=node.js&logoColor=white" alt="Node.js 20+">
   <img src="https://img.shields.io/badge/license-MIT-blue?style=flat-square" alt="MIT license">
@@ -42,6 +46,7 @@
 - [Query parameters](#query-parameters)
 - [Deployment](#deployment)
 - [Run locally](#run-locally)
+- [Credits & attribution](#credits--attribution)
 - [Contributing](#contributing)
 
 ---
@@ -89,7 +94,7 @@ Tune username, theme, style and sections in the [interactive demo](https://ghmet
 
 ## What it is
 
-github-metrics turns a GitHub username into a single crisp SVG. Embed one `<img>`. The card is regenerated on every view, cached in memory, and safe to drop into a profile README.
+github-metrics is a derivative of the open-source [samdev-pulse](https://github.com/SamXop123/samdev-pulse) project. It turns a GitHub username into a single crisp SVG. Embed one `<img>`. The card is regenerated on every view, cached in memory, and safe to drop into a profile README.
 
 ### Why github-metrics
 
@@ -291,6 +296,14 @@ previews/         # Static theme SVGs
 
 ---
 
+## Credits & attribution
+
+**github-metrics is a derivative work based on [samdev-pulse](https://github.com/SamXop123/samdev-pulse), originally created by [SamXop123](https://github.com/SamXop123) (Sameer Prajapati).**
+
+The original codebase — including the core SVG renderer, the GitHub / LeetCode / Codeforces / CodeChef services, the theme definitions, caching, sanitizers and their tests — comes from samdev-pulse. This repository extends it with additional features, documentation and deployment changes, but it is not an independent reimplementation.
+
+The original copyright notice is preserved in [LICENSE](LICENSE). If you reuse this project, keep both the samdev-pulse attribution and this project's attribution.
+
 ## Contributing
 
 Contributions are welcome — bug fixes, themes, docs and renderer work. See [CONTRIBUTING.md](CONTRIBUTING.md) and the [Code of Conduct](CODE_OF_CONDUCT.md).
@@ -299,4 +312,4 @@ Security issues and SVG injection reports should go to the maintainers privately
 
 ## License
 
-[MIT](LICENSE) © vsmutok.
+[MIT](LICENSE). Original project © 2026 SamXop123 (samdev-pulse); modifications and additions © 2026 vsmutok.

@@ -5,6 +5,11 @@ Thanks for your interest in improving **github-metrics**.
 Bug fixes, UI polish, new themes, documentation improvements, and renderer
 refactors are all welcome.
 
+> **Attribution:** github-metrics is a derivative of
+> [samdev-pulse](https://github.com/SamXop123/samdev-pulse) by SamXop123.
+> Please keep the original copyright notice in `LICENSE` and the attribution
+> in `README.md` intact.
+
 ---
 
 ## Before you start

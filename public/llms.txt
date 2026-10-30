@@ -2,6 +2,8 @@
 
 > github-metrics is a dynamic, high-performance GitHub profile README generator that renders real-time GitHub activity, contribution streaks, LeetCode, Codeforces, and CodeChef statistics, achievement trophies, top languages, and custom domain insights into a unified, responsive SVG card.
 
+**Original project:** [samdev-pulse](https://github.com/SamXop123/samdev-pulse) by SamXop123. github-metrics is a derivative work based on it; the original copyright notice is preserved in the LICENSE file.
+
 ## Documentation & Endpoints
 
 - [Full LLM Documentation](./llms-full.txt): Complete API query parameters, theme references, and markdown examples.

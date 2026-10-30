@@ -36,6 +36,12 @@
     "github-pages"
   ],
   "author": "vsmutok",
+  "contributors": [
+    {
+      "name": "SamXop123 (samdev-pulse, original project)",
+      "url": "https://github.com/SamXop123"
+    }
+  ],
   "license": "MIT",
   "repository": {
     "type": "git",

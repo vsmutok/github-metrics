@@ -1,7 +1,7 @@
 # github-metrics — Complete API & System Reference
 
 ## Overview
-github-metrics is an open-source, production-ready GitHub profile README widget that compiles developer metrics across multiple platforms into an aesthetic, vector SVG image.
+github-metrics is an open-source, production-ready GitHub profile README widget that compiles developer metrics across multiple platforms into an aesthetic, vector SVG image. It is a derivative work based on [samdev-pulse](https://github.com/SamXop123/samdev-pulse), originally created by SamXop123.
 
 Base URL: `/api/profile`
 
@@ -95,4 +95,4 @@ icons together:
 - **Backend Runtime**: Node.js ES Modules / Express, deployed as a serverless function on Vercel.
 - **Rendering Engine**: Native SVG generation with embedded SVGs, a responsive layout engine, and zero external binary dependencies.
 - **Caching**: Multi-tiered in-memory LRU cache with deduplication to ensure rapid sub-second responses and respect upstream API rate limits.
-- **License**: MIT License © vsmutok.
+- **License**: MIT License. Original project © 2026 SamXop123 (samdev-pulse); modifications and additions © 2026 vsmutok.
